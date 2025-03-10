@@ -4,4 +4,4 @@ services:
    python:
      build: .
      container_name: prj-tour-route-app
-     command: tail -f /dev/null
+     tty: true
