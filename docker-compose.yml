@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  web:  # ここにサービス名を追加
-     build: .
-     container_name: prj-tour-route-app
-     tty: true
-     ports:
+  web:
+    build: .
+    container_name: prj-tour-route-app
+    tty: true
+    ports:
       - "8055:80"
-     volumes:
+    volumes:
       - ./app:/usr/src/app
-     environment:  # インデントを修正
+    environment:
       - DEBUG=1

@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir --upgrade -r /usr/src/app/requirements.txt
 
 COPY ./app /usr/src/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
