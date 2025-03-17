@@ -6,8 +6,9 @@ services:
     container_name: prj-tour-route-app
     tty: true
     ports:
-      - "8055:80"
+      - "8055:8000"  # ホストの8055ポートをコンテナの8000ポートにマッピング
     volumes:
-      - ./app:/usr/src/app
+      - ./app:/usr/src/app  # 全プロジェクトをマウント（./appではなく）
     environment:
       - DEBUG=1
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # --reloadフラグを追加

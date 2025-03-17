@@ -7,8 +7,8 @@ def get_coordinate(place_name, prefecture= ""):
     url = "https://msearch.gsi.go.jp/address-search/AddressSearch"
     params = {"q": place_name}
     r = requests.get(url, params=params)
-    data = r.json()
     print(f"r: {r}")
+    data = r.json()
     if "error" in data:
         print(data["error"])
         return None, None
@@ -26,11 +26,11 @@ def get_coordinate(place_name, prefecture= ""):
             if row["properties"]["title"].startswith(prefecture):
                 coordinates = row["geometry"]["coordinates"]
                 title = row["properties"]["title"]
-                return coordinates, title
+                return print(coordinates)
         # 見つからない場合
         return None, None
        
-coordinates1,title1 = get_coordinate("秋芳洞")
+coordinates1,title1 = get_coordinate("厳島神社")
 print("有名施設：",coordinates1,title1)
 
 # 秋芳洞 34.22795,131.303069
