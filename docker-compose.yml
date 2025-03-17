@@ -8,6 +8,6 @@ services:
      ports:
       - "8055:80"
      volumes:
-      - ./app:/usr/src/app/app
+      - ./app:/usr/src/app
      environment:  # インデントを修正
       - DEBUG=1
