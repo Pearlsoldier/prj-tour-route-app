@@ -32,6 +32,7 @@ def get_coordinate(place_name, prefecture= ""):
             if row["properties"]["title"].startswith(place_name):
                 coordinate = row["geometry"]["coordinates"]
                 title = row["properties"]["title"]
+                print("🩷")
                 return print(coordinate)
         # レスポンス値と都道府県が一致する緯度経度を返す
         for row in data:
@@ -67,3 +68,18 @@ def get_location(lat, lon):
 "https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat=43.0686718333333&lon=141.351173694444"
 ]
 """
+
+def main():
+    lat = 34.959377,
+    lon = 132.1442749
+    location = get_location(lat, lon)
+    print(location)
+
+    place_name  = "島根県立しまね海洋館(アクアス)"
+    place = get_coordinate(place_name, prefecture= "")
+    print(place)
+
+
+
+if __name__ == "__main__":
+    main()
