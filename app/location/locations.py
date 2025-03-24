@@ -1,43 +1,50 @@
-class CurrentLocation:
+import requests
+
+
+class GeocodingService:
+    def __init__(self):
+        pass
+
+
+def convert_to_coordinates(place_name: str) -> list:
     """
-    現在地点
+    国土地理院APIを使用して、住所から緯度経度を取得する関数。
     """
+    url = "https://msearch.gsi.go.jp/address-search/AddressSearch"
+    params = {"q": place_name}
+    r = requests.get(url, params=params)
+    data = r.json()
+    if "error" in data:
+        return None, None
+    if not data:
+        return None, None
+    else:
+        # レスポンスと施設名が一致する緯度経度を返す
+        for row in data:
+            if row["properties"]["title"].startswith(place_name):
+                coordinate = row["geometry"]["coordinates"]
+                title = row["properties"]["title"]
+                return coordinate, title
+        return None, None
 
-    def __init__(self, current_point: list):
-        self.current_point = current_point
+
+# 秋芳洞 34.22795,131.303069
 
 
-class StartLocation:
+def convert_to_location(lon: float, lat: float) -> str:
     """
-    スタート地点特有の処理
+    経度緯度から地点名に変換する関数
+        longitude (float): 経度
+        latitude (float): 緯度
     """
-
-    def __init__(self, start_point: list):
-        self.start_point = start_point
+    pass
 
 
-class EndLocation:
-    """
-    最終地点の処理
-    """
-
-    def __init__(self, end_point: list):
-        self.end_point = end_point
+def main():
+    place = "厳島神社"
+    point = convert_to_coordinates(place)
+    print(point)
 
 
-class NextLocation:
-    """
-    次の目指す地点の地点
-    """
-
-    def __init__(self, next_point):
-        self.next_point = next_point
-
-
-class VisitedLocation:
-    """
-    通った地点の処理
-    """
-
-    def __init__(self, visited_point):
-        self.visited_point = visited_point
+if __name__ == "__main__":
+    main()

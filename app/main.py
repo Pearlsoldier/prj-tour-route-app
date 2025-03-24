@@ -32,7 +32,6 @@ def get_coordinate(place_name, prefecture= ""):
             if row["properties"]["title"].startswith(place_name):
                 coordinate = row["geometry"]["coordinates"]
                 title = row["properties"]["title"]
-                print("🩷")
                 return print(coordinate)
         # レスポンス値と都道府県が一致する緯度経度を返す
         for row in data:
