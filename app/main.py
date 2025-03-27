@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi import FastAPI
-
+import folium
 import requests
 
 app = FastAPI()
@@ -10,6 +10,18 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+
+copyright_osm = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+
+_map = folium.Map(location=[35.681167, 139.767052],
+  attr=copyright_osm,
+)
+
+_map.save('sample1.html')
+
+
+
 
 @app.get("/location/{place_name}/")
 def get_coordinate(place_name, prefecture= ""):
