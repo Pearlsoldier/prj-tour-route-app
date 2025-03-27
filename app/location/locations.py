@@ -41,39 +41,13 @@ class ReverseGeocoding():
         self.r = requests.get(self.url)
         self.data = self.r.json()    
 
-
-
-# class CurrentLocation:
-#     def __init__(self, current_location):
-#         self.current_location = current_location
-
-# class NextLocation:
-#     def __init__(self, next_location):
-#         self.next_location = next_location
-
-
-
-
 # 秋芳洞 34.22795,131.303069
-
 
 def main():
     place_name = "厳島神社"
     geo_instance = Geocoding()
     coordinates = geo_instance.get_coordinate(place_name, prefecture="")
     print(coordinates)
-
-
-
-
-    # 
-    # location_instance = CurrentLocation(place_name)
-    # print(location_instance.current_location)
-
-    # place_name = "秋芳洞"
-    # location_instance = NextLocation(place_name)
-    # print(location_instance.next_location)
-
 
 if __name__ == "__main__":
     main()
