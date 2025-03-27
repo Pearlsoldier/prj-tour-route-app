@@ -18,7 +18,7 @@ class StartLocation:
 
 class EndLocation:
     """
-    最終地点の処理
+    最終地点
     """
 
     def __init__(self, end_point: list):
@@ -27,7 +27,7 @@ class EndLocation:
 
 class NextLocation:
     """
-    次の目指す地点の地点
+    次の目指す地点
     """
 
     def __init__(self, next_point):
@@ -36,7 +36,7 @@ class NextLocation:
 
 class VisitedLocation:
     """
-    通った地点の処理
+    通った地点
     """
 
     def __init__(self, visited_point):
