@@ -12,13 +12,6 @@ def read_root():
     return {"Hello": "World"}
 
 
-copyright_osm = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-
-_map = folium.Map(location=[35.681167, 139.767052],
-  attr=copyright_osm,
-)
-
-_map.save('sample1.html')
 
 
 
