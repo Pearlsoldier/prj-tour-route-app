@@ -2,7 +2,7 @@ import requests
 
 
 class Geocoding:
-    def __init__(self, place_name):
+    def __init__(self, place_name: str):
         self.place = place_name
         url = f"https://msearch.gsi.go.jp/address-search/AddressSearch?q={self.place}"
         params = {"q": place_name}
@@ -22,6 +22,15 @@ class Geocoding:
             # レスポンスと施設名が一致する緯度経度を返す
             for row in self.data:
                 if row["properties"]["title"].startswith(self.place):
-                    coordinate = row["geometry"]["coordinates"]
-                    return coordinate
+                    coordinates = row["geometry"]["coordinates"]
+                    return coordinates
             return None
+
+def main():
+    geo = Geocoding("東京駅")
+    result = geo.get_coordinate()
+    print(result)
+
+
+if __name__ == "__main__":
+    main()

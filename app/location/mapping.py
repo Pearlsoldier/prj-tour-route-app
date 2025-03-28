@@ -1,6 +1,6 @@
 import folium
 
-class Map:
+class Mapping:
     def __init__(self, location):
         """
         地図の初期化
@@ -9,7 +9,6 @@ class Map:
         lat = location.lat
         lon = location.lon
         self.map = folium.Map(location=(lat, lon))
-        return self.map
 
     def plot_marker(self, location):
         """
