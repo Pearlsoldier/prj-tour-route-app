@@ -1,4 +1,10 @@
-from geocoding import Geocoding
+import sys
+import os
+# appディレクトリをsys.pathに追加
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
+from location.geocoding import Geocoding
 
 class Location:
     def __init__(self, place_name: str):

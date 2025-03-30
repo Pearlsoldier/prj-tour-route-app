@@ -1,22 +1,31 @@
+import sys
+import os
+# appディレクトリをsys.pathに追加
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
+from location.locations import Location
+
 import folium
 
+
+
 class Mapping:
-    def __init__(self, location):
+    def __init__(self, place_name):
         """
         地図の初期化
         地図のインスタンスを生成
         """
-        lat = location.lat
-        lon = location.lon
-        self.map = folium.Map(location=(lat, lon))
+        locator = Location(place_name)
+        self.lat = locator.lat
+        self.lon = locator.lon
+        self.map = folium.Map(location=(self.lat, self.lon))
 
-    def plot_marker(self, location):
+    def plot_marker(self):
         """
         地図にマーカーをプロットするメソッド
         """
-        lat = location.lat
-        lon = location.lon
-        return folium.Marker(location=[lat, lon]).add_to(self.map)
+        return folium.Marker(location=[self.lat, self.lon]).add_to(self.map)
         
 
     def mapping(self):
