@@ -1,24 +1,38 @@
-import sys
-import os
-# appディレクトリをsys.pathに追加
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from dataclasses import dataclass
 
 
-from location.geocoding import Geocoding
+@dataclass
+class Coordinate:
+    value: float
+    type: str  # "latitude" または "longitude"
+
+    def __str__(self):
+        return str(self.value)
+
 
 class Location:
-    def __init__(self, place_name: str):
-        geocode = Geocoding(place_name)
-        coordinates = geocode.get_coordinate()
-        self.lat = coordinates[1]
-        self.lon = coordinates[0]
-        self.place_name = place_name
+    def __init__(self, geocoding: list[float], place: str) -> None:
+        """
+        Locationオブジェクトを初期化します
 
-def main():
-    locator = Location("東京駅")
-    print(locator.lat)
-    print(locator.lon)
-    print(locator.place_name)
+        Args:
+            geocoding: [経度, 緯度]の形式の座標リスト
+            place: 場所の名称
+        """
+        # TODO： 経度・緯度の順番で取れるのか？それとも緯度・経度？
+        # FIXME: 緯度経度の順序に合わせてインデックスは修正してください
+        self._latitude = Coordinate(geocoding[1], "latitude")
+        self._longitude = Coordinate(geocoding[0], "longitude")
+        self._place = place
 
-if __name__ == "__main__":
-    main()
+    @property
+    def latitude(self) -> Coordinate:
+        return self._latitude
+
+    @property
+    def longitude(self) -> Coordinate:
+        return self._longitude
+
+    @property
+    def place(self) -> str:
+        return self._place
