@@ -7,6 +7,8 @@ from typing import Union
 from fastapi import FastAPI
 from location.management import LocationManager, MappingManager
 
+from location.geocoding import Geocoding
+
 app = FastAPI()
 
 
@@ -29,8 +31,11 @@ def mapping(place_name):
 
 
 def main():
-    pass
-
+    # Geocodingクラスの使用例
+    geocoding_service = Geocoding()
+    geocoding = geocoding_service.get_coordinate(place="東京駅")
+    print(geocoding)
+    
 
 if __name__ == "__main__":
     main()
