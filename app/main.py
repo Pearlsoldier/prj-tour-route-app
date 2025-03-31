@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from location.management import LocationManager, MappingManager
 
 from location.geocoding import Geocoding
+from location.locations import Location
 
 app = FastAPI()
 
@@ -34,7 +35,13 @@ def main():
     # Geocodingクラスの使用例
     geocoding_service = Geocoding()
     geocoding = geocoding_service.get_coordinate(place="東京駅")
-    print(geocoding)
+    print(geocoding) # [float, float]
+    
+    # Locationクラスの使用例
+    tokyo_station = Location(geocoding=geocoding, place="東京駅")
+    print(tokyo_station.place)
+    print(tokyo_station.latitude)
+    print(tokyo_station.longitude)
     
 
 if __name__ == "__main__":
