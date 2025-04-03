@@ -21,8 +21,10 @@ class Location:
         """
         # TODO： 経度・緯度の順番で取れるのか？それとも緯度・経度？
         # FIXME: 緯度経度の順序に合わせてインデックスは修正してください
-        self._latitude = Coordinate(geocoding[1], "latitude")
-        self._longitude = Coordinate(geocoding[0], "longitude")
+        # 経度・緯度の順番で取れるが、表記は緯度経度の順序で表記される。
+        # 例：北緯XX度、東経YY度
+        self._longitude = Coordinate(geocoding[0], "latitude")
+        self._latitude= Coordinate(geocoding[1], "longitude")
         self._place = place
 
     @property
