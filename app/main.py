@@ -5,11 +5,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from typing import Union
 from fastapi import FastAPI
-from location.management import LocationManager, MappingManager
+from location.management import LocationManager
 
-from location.geocoding import Geocoding
+from geocoding.geocoding import Geocoding
 from location.locations import Location
-
+from interface.input_parser import Interface
 app = FastAPI()
 
 
@@ -32,17 +32,20 @@ def mapping(place_name):
 
 
 def main():
-    # Geocodingクラスの使用例
-    geocoding_service = Geocoding()
-    geocoding = geocoding_service.get_coordinate(place="東京駅")
-    print(geocoding) # [float, float]
+    # # Geocodingクラスの使用例
+    # geocoding_service = Geocoding()
+    # geocoding = geocoding_service.get_coordinate(place="東京駅")
+    # print(geocoding) # [float, float]
     
-    # Locationクラスの使用例
-    tokyo_station = Location(geocoding=geocoding, place="東京駅")
-    print(tokyo_station.place)
-    print(tokyo_station.latitude)
-    print(tokyo_station.longitude)
-    
+    # # Locationクラスの使用例
+    # tokyo_station = Location(geocoding=geocoding, place="東京駅")
+    # print(tokyo_station.place)
+    # print(tokyo_station.latitude)
+    # print(tokyo_station.longitude)
+
+    # Interfaceクラスの使用テスト
+    tokyo_station = Interface(place=input(),transport=input(), transit_time=input(), )
+    print(tokyo_station.place, tokyo_station.transport, tokyo_station.transit_time)
 
 if __name__ == "__main__":
     main()
