@@ -1,4 +1,4 @@
-from locations import Location
+from location.locations import Location
 import requests
 
 """

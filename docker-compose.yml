@@ -8,7 +8,32 @@ services:
     ports:
       - "8055:8000"  # ホストの8055ポートをコンテナの8000ポートにマッピング
     volumes:
-      - ./app:/usr/src/app  # 全プロジェクトをマウント（./appではなく）
+      - ./app:/usr/src/app  # アプリケーションコードをマウント
     environment:
       - DEBUG=1
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # --reloadフラグを追加
+      - DATABASE_URL=postgresql://prj_tour_route_user:prj_tour_route_password@db:5432/prj_tour_route_db  # 修正
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    container_name: prj-tour-route-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=prj_tour_route_user
+      - POSTGRES_PASSWORD=prj_tour_route_password
+      - POSTGRES_DB=prj_tour_route_db
+    ports:
+      - "9876:5432"  # ホストの9876ポートをコンテナの5432ポートにマッピング
+  adminer:
+      image: adminer
+      container_name: prj-tour-route-adminer
+      ports:
+        - "8080:8080"
+      depends_on:
+        - db
+        
+volumes:
+  postgres_data:

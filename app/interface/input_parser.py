@@ -14,5 +14,5 @@ class Interface:
     transport: str
     transit_time: str
 
-    def __str__(self):
-        return (self.place, self.transport, self.transit_time)
+    # def __str__(self):
+    #     return {"place": self.place, "transport": self.transport, "transit_time": self.transit_time}

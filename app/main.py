@@ -10,6 +10,7 @@ from location.management import LocationManager
 from geocoding.geocoding import Geocoding
 from location.locations import Location
 from interface.input_parser import Interface
+from calculation.distance_calculation import DistanceCalculator
 app = FastAPI()
 
 
@@ -32,20 +33,30 @@ def mapping(place_name):
 
 
 def main():
-    # # Geocodingクラスの使用例
-    # geocoding_service = Geocoding()
-    # geocoding = geocoding_service.get_coordinate(place="東京駅")
-    # print(geocoding) # [float, float]
-    
-    # # Locationクラスの使用例
-    # tokyo_station = Location(geocoding=geocoding, place="東京駅")
-    # print(tokyo_station.place)
-    # print(tokyo_station.latitude)
-    # print(tokyo_station.longitude)
-
     # Interfaceクラスの使用テスト
-    tokyo_station = Interface(place=input(),transport=input(), transit_time=input(), )
-    print(tokyo_station.place, tokyo_station.transport, tokyo_station.transit_time)
+    interfaces = Interface(place=input(), transport=input(), transit_time=input(), )
+    print(f"input_place: {interfaces.place}")
+    print(f"input_transport: {interfaces.transport}")
+    print(f"input_transit_time: {interfaces.transit_time}")
+
+    # Geocodingクラスの使用例
+    geocoding_service = Geocoding()
+    geocoding = geocoding_service.get_coordinate(place=interfaces.place)
+    print(f"lan: {geocoding[0]}")   # [float, float]
+    
+    # Locationクラスの使用例
+    tokyo_station = Location(geocoding=geocoding, place=interfaces.place)
+    print(tokyo_station.place)
+    print(tokyo_station.latitude)
+    print(tokyo_station.longitude)
+
+    tokyo_tower = Location(geocoding=geocoding, place="東京タワー")
+
+    # DistanceCalculatorクラスの使用例
+    distance = DistanceCalculator(tokyo_station, tokyo_tower)
+    result = distance.calculate
+    print(f"distance: {result}")
+
 
 if __name__ == "__main__":
     main()
