@@ -23,3 +23,23 @@ class Geocoding:
                     coordinates = row["geometry"]["coordinates"]
                     return coordinates
             return None
+
+
+class ReverseGeocoding:
+    def __init__(self):
+        self.api_url = "https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat={lat}&lon={lon}"
+
+    def get_address(self, lat, lon):
+        """
+        リバースジオコーディング
+        国土地理院APIを使用して緯度経度から住所を取得する関数。
+        """
+        address_response = requests.get(self.api_url.format(lat=lat, lon=lon))
+        data = address_response.json()
+
+        if "results" in data:
+            address = data["results"]["lv01Nm"]
+            return address
+        else:
+            print("住所情報が見つかりませんでした。")
+

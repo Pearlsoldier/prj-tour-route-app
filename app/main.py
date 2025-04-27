@@ -1,6 +1,8 @@
 # サーバーのメインファイル（例：app.py）にも同様のパス設定を追加
 import sys
 import os
+from rich.console import Console
+import pprint
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -8,11 +10,11 @@ from typing import Union
 from fastapi import FastAPI
 from location.management import LocationManager
 
-from geocoding.geocoding import Geocoding
+from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location
-from interface.input_parser import Interface
+from interface.input_parser import Interface, Interface_administrator
 from calculation.distance_calculation import DistanceCalculator
-from manager.manager import FacilityManager
+from DB.database import PostgresCredentials, PostgresClient, DatabaseService
 
 app = FastAPI()
 
@@ -55,16 +57,37 @@ def main():
 
     # tokyo_tower = Location(geocoding=geocoding, place="東京タワー")
 
-    # # DistanceCalculatorクラスの使用例
-    # distance = DistanceCalculator(tokyo_station, tokyo_tower)
-    # result = distance.calculate
-    # print(f"distance: {result}")
+    # # # DistanceCalculatorクラスの使用例
+    # # distance = DistanceCalculator(tokyo_station, tokyo_tower)
+    # # result = distance.calculate
+    # # print(f"distance: {result}")
 
-    # FacilityManagerクラスの使用例
-    manager = FacilityManager()
-    idgetter = manager.get_id
-    idgetter()
+    # # FacilityManagerクラスの使用例
+    # add_address = DatabaseService()
+    # add_address.add_column()
+
+    # administrator(管理者モード)
+    input_place = Interface_administrator(place=input())
+    admin_place = str((input_place))
+
+    # 緯度、経度を取得する
+    geocoding_service = Geocoding()
+    coordinates = geocoding_service.get_coordinate(admin_place)
+    input_location = Location(geocoding=coordinates, place=admin_place)
+    place_lat = input_location._latitude.value
+    place_lon = input_location._longitude.value
+
+    # 緯度、経度から住所を取得する
+    reverse_geocoding_service = ReverseGeocoding()
+    input_place_address = reverse_geocoding_service.get_address(lat=place_lat, lon=place_lon)
+    place_address = input_place_address
+
+    add_address = DatabaseService()
+    add_address.rename_column()
+    # add_address.add_value(admin_place, place_address, place_lat, place_lon,)
+
 
 
 if __name__ == "__main__":
     main()
+
