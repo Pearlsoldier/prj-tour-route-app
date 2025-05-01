@@ -79,15 +79,20 @@ def main():
 
     # 緯度、経度から住所を取得する
     reverse_geocoding_service = ReverseGeocoding()
-    input_place_address = reverse_geocoding_service.get_address(lat=place_lat, lon=place_lon)
+    input_place_address = reverse_geocoding_service.get_address(
+        lat=place_lat, lon=place_lon
+    )
     place_address = input_place_address
 
     add_address = DatabaseService()
-    add_address.rename_column()
-    # add_address.add_value(admin_place, place_address, place_lat, place_lon,)
-
+    # add_address.re_type()
+    add_address.add_value(
+        admin_place,
+        place_address,
+        place_lat,
+        place_lon,
+    )
 
 
 if __name__ == "__main__":
     main()
-

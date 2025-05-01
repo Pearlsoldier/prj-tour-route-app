@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 """
 入力(施設名、移動手段、所要時間)を受け取りたいので、保存するものとして3点を定義する
 挙動として、
@@ -10,6 +11,7 @@ class mode_administrator(管理者)で施設名を受け取る
 
 """
 
+
 @dataclass
 class Interface:
     place: str
@@ -18,6 +20,7 @@ class Interface:
 
     # def __str__(self):
     #     return {"place": self.place, "transport": self.transport, "transit_time": self.transit_time}
+
 
 @dataclass
 class Interface_administrator:
