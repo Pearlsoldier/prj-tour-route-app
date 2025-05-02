@@ -28,3 +28,10 @@ class Interface_administrator:
 
     def __str__(self):
         return self.place
+    
+@dataclass
+class Interface_batch:
+    places: list
+
+    def __iter__(self):
+        return self.places
