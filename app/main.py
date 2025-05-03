@@ -41,18 +41,14 @@ def mapping(place_name):
 def main():
     print(f"入力したい施設数の数を入力してください: x箇所")
     n = int(input())
-    batch_place = Interface_batch()
     print(f"入力したい施設数の数: {n}箇所")
+    demo = DatabasePreprocessing()
+
     for i in range(n):
-        batch_place.places.append(input())
-    print(batch_place.places)
-
-
-
-
-
-    
-
+        batch_place = demo.add_places(input())
+        batch_latitude, batch_longitude, batch_address = demo.get_geocoding(batch_place.places[i])
+        is_demo = demo.add_database(batch_place.places[i], batch_address, batch_latitude, batch_longitude)
+        print(is_demo)
 
 if __name__ == "__main__":
     main()

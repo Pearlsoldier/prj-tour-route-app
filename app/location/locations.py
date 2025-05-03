@@ -6,8 +6,8 @@ class Coordinate:
     value: float
     type: str  # "latitude" または "longitude"
 
-    def __str__(self):
-        return str(self.value)
+    def __float__(self):
+        return float(self.value)
 
 
 class Location:

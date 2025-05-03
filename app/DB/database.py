@@ -100,7 +100,7 @@ class DatabaseService:
                 return True
             return False
         except Exception as e:
-            print(f"失敗しました。{e}")
+            print(f"追加に失敗しました。{e}")
             return False
 
     def rename_column(self):

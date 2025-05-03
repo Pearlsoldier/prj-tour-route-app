@@ -1,9 +1,9 @@
-import psycopg2
+import psycopg3
 
 
 class FacilityManager:
     def __init__(self):
-
+        pass
 
     def get_id(self):
         self.cur.execute("SELECT * FROM  places where id = 1")
