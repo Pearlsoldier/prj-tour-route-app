@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 """
 入力(施設名、移動手段、所要時間)を受け取りたいので、保存するものとして3点を定義する
@@ -31,7 +31,6 @@ class Interface_administrator:
     
 @dataclass
 class Interface_batch:
-    places: list
+    places: list[str] = field(default_factory=list)
 
-    def __iter__(self):
-        return self.places
+

@@ -12,9 +12,10 @@ from location.management import LocationManager
 
 from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location
-from interface.input_parser import Interface, Interface_administrator
+from interface.input_parser import Interface, Interface_administrator, Interface_batch
 from calculation.distance_calculation import DistanceCalculator
 from DB.database import PostgresCredentials, PostgresClient, DatabaseService
+from batch.preprocessing import DatabasePreprocessing
 
 app = FastAPI()
 
@@ -38,60 +39,19 @@ def mapping(place_name):
 
 
 def main():
-    # # Interfaceクラスの使用テスト
-    # interfaces = Interface(place=input(), transport=input(), transit_time=input(), )
-    # print(f"input_place: {interfaces.place}")
-    # print(f"input_transport: {interfaces.transport}")
-    # print(f"input_transit_time: {interfaces.transit_time}")
+    print(f"入力したい施設数の数を入力してください: x箇所")
+    n = int(input())
+    batch_place = Interface_batch()
+    print(f"入力したい施設数の数: {n}箇所")
+    for i in range(n):
+        batch_place.places.append(input())
+    print(batch_place.places)
 
-    # # Geocodingクラスの使用例
-    # geocoding_service = Geocoding()
-    # geocoding = geocoding_service.get_coordinate(place=interfaces.place)
-    # print(f"lan: {geocoding[0]}")   # [float, float]
 
-    # # Locationクラスの使用例
-    # tokyo_station = Location(geocoding=geocoding, place=interfaces.place)
-    # print(tokyo_station.place)
-    # print(tokyo_station.latitude)
-    # print(tokyo_station.longitude)
 
-    # tokyo_tower = Location(geocoding=geocoding, place="東京タワー")
 
-    # # # DistanceCalculatorクラスの使用例
-    # # distance = DistanceCalculator(tokyo_station, tokyo_tower)
-    # # result = distance.calculate
-    # # print(f"distance: {result}")
 
-    # # FacilityManagerクラスの使用例
-    # add_address = DatabaseService()
-    # add_address.add_column()
-
-    # administrator(管理者モード)
-    input_place = Interface_administrator(place=input())
-    admin_place = str((input_place))
-
-    # 緯度、経度を取得する
-    geocoding_service = Geocoding()
-    coordinates = geocoding_service.get_coordinate(admin_place)
-    input_location = Location(geocoding=coordinates, place=admin_place)
-    place_lat = input_location._latitude.value
-    place_lon = input_location._longitude.value
-
-    # 緯度、経度から住所を取得する
-    reverse_geocoding_service = ReverseGeocoding()
-    input_place_address = reverse_geocoding_service.get_address(
-        lat=place_lat, lon=place_lon
-    )
-    place_address = input_place_address
-
-    add_address = DatabaseService()
-    # add_address.re_type()
-    add_address.add_value(
-        admin_place,
-        place_address,
-        place_lat,
-        place_lon,
-    )
+    
 
 
 if __name__ == "__main__":
