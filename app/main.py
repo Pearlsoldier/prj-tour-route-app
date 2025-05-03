@@ -46,9 +46,14 @@ def main():
 
     for i in range(n):
         batch_place = demo.add_places(input())
-        batch_latitude, batch_longitude, batch_address = demo.get_geocoding(batch_place.places[i])
-        is_demo = demo.add_database(batch_place.places[i], batch_address, batch_latitude, batch_longitude)
+        batch_latitude, batch_longitude, batch_address = demo.get_geocoding(
+            batch_place.places[i]
+        )
+        is_demo = demo.add_database(
+            batch_place.places[i], batch_address, batch_latitude, batch_longitude
+        )
         print(is_demo)
+
 
 if __name__ == "__main__":
     main()
