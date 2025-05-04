@@ -60,6 +60,18 @@ class PostgresClient:
     def close(self):
         self.cur.close()
 
+    # def execute(self, sql):
+    # try:
+    #     if self.client.connect():
+    #         self.client.execute(sql)
+    #         self.client.commit()
+    #         self.client.close()
+    #         return True
+    #     return False
+    # except Exception as e:
+    #     print(f"失敗しました。{e}")
+    # return False
+
 
 class DatabaseService:
     """
@@ -141,3 +153,27 @@ class DatabaseService:
         except Exception as e:
             print(f"失敗しました。{e}")
             return False
+    
+    def add_table(self):
+        sql = """CREATE TABLE facility_genres (
+        id SERIAL PRIMARY KEY,
+        main_genre VARCHAR(10),
+        sub_genre_1 VARCHAR(10),
+        sub_genre_2 VARCHAR(10)
+        )"""
+        try:
+            if self.client.connect():
+                self.client.execute(sql)
+                self.client.commit()
+                self.client.close()
+                return True
+            return False
+        except Exception as e:
+            print(f"失敗しました。{e}")
+        return False
+
+
+
+    def make_sql(self):
+        pass
+

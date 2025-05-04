@@ -39,20 +39,24 @@ def mapping(place_name):
 
 
 def main():
-    print(f"入力したい施設数の数を入力してください: x箇所")
-    n = int(input())
-    print(f"入力したい施設数の数: {n}箇所")
-    demo = DatabasePreprocessing()
+#     print(f"入力したい施設数の数を入力してください: x箇所")
+#     n = int(input())
+#     print(f"入力したい施設数の数: {n}箇所")
+#     demo = DatabasePreprocessing()
 
-    for i in range(n):
-        batch_place = demo.add_places(input())
-        batch_latitude, batch_longitude, batch_address = demo.get_geocoding(
-            batch_place.places[i]
-        )
-        is_demo = demo.add_database(
-            batch_place.places[i], batch_address, batch_latitude, batch_longitude
-        )
-        print(is_demo)
+#     for i in range(n):
+#         batch_place = demo.add_places(input())
+#         batch_latitude, batch_longitude, batch_address = demo.get_geocoding(
+#             batch_place.places[i]
+#         )
+#         is_demo = demo.add_database(
+#             batch_place.places[i], batch_address, batch_latitude, batch_longitude
+#         )
+#         print(is_demo)
+    addtable = DatabaseService()
+    is_add_tabel = addtable.add_table()
+    print(is_add_tabel)
+
 
 
 if __name__ == "__main__":
