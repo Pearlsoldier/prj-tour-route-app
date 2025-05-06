@@ -53,9 +53,16 @@ def main():
 #             batch_place.places[i], batch_address, batch_latitude, batch_longitude
 #         )
 #         print(is_demo)
-    addtable = DatabaseService()
-    is_add_tabel = addtable.add_table()
-    print(is_add_tabel)
+    check_constraints = DatabaseService()
+    # is_add_tabel = addtable.add_table()
+    # print(is_add_tabel)
+    is_check = check_constraints.configuring_foreign_key()
+    print(is_check)
+
+    # cid_table_add_column = DatabaseService()
+    # is_add_column = cid_table_add_column.add_column()
+    # print(is_add_column)
+
 
 
 

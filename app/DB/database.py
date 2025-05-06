@@ -93,7 +93,7 @@ class DatabaseService:
     def add_column(self):
         try:
             if self.client.connect():
-                self.client.execute("ALTER TABLE places ADD COLUMN Genre TEXT")
+                self.client.execute("ALTER TABLE facility_genres ADD COLUMN name TEXT")
                 self.client.commit()
                 self.client.close()
                 return True
@@ -172,6 +172,40 @@ class DatabaseService:
             print(f"失敗しました。{e}")
         return False
 
+    def check_constraints(self):
+        sql = """SELECT table_name
+        , constraint_name
+        , constraint_type
+        FROM information_schema.table_constraints
+        WHERE table_name = 'places'
+        AND (constraint_type = 'PRIMARY KEY' OR constraint_type = 'FOREIGN KEY') ;"""
+        try:
+            if self.client.connect():
+                cursor = self.client.execute(sql)
+                results = cursor.fetchall()
+                self.client.commit()
+                self.client.close()
+                return results
+            return False
+        except Exception as e:
+            print(f"失敗しました。{e}")
+        return False
+    
+    def configuring_foreign_key(self):
+        sql = """ALTER TABLE places
+        ADD CONSTRAINT fk_place_category
+        FOREIGN KEY (name) REFERENCES facility_genres(name);"""
+        try:
+            if self.client.connect():
+                cursor = self.client.execute(sql)
+                results = cursor.fetchall()
+                self.client.commit()
+                self.client.close()
+                return results
+            return False
+        except Exception as e:
+            print(f"失敗しました。{e}")
+            return False
 
 
     def make_sql(self):
