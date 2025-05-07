@@ -31,10 +31,6 @@ class PostgresClient:
         self.config = PostgresCredentials()
 
     def connect(self):
-        print(
-            f"PostgresClient: host={self.config.host}, db={self.config.dbname}, user={self.config.user}, port={self.config.port}"
-        )
-
         try:
             self.conn = psycopg.connect(
                 host=self.config.host,
@@ -60,17 +56,6 @@ class PostgresClient:
     def close(self):
         self.cur.close()
 
-    # def execute(self, sql):
-    # try:
-    #     if self.client.connect():
-    #         self.client.execute(sql)
-    #         self.client.commit()
-    #         self.client.close()
-    #         return True
-    #     return False
-    # except Exception as e:
-    #     print(f"失敗しました。{e}")
-    # return False
 
 
 class DatabaseService:
@@ -83,6 +68,31 @@ class DatabaseService:
     def __init__(self):
         self.client = PostgresClient()
         self.conn = self.client.connect()
+
+    def make_sql(self):
+        sql = """CREATE TABLE locations (
+        locations_id INTEGER PRIMARY KEY,
+        place_name TEXT UNIQUE,
+        address TEXT,
+        latitude numeric,
+        longitude numeric
+        )"""
+        return sql
+    
+    def create_table(self, sql):
+        try:
+            if self.client.connect():
+                self.client.execute(sql)
+                self.client.commit()
+                self.client.close()
+                return  True
+            return False
+        except Exception as e:
+            print(f"失敗しました。{e}")
+            return False
+
+
+
 
     def get_id(self):
         self.client.cur.execute("SELECT * FROM  places where id = 1")
