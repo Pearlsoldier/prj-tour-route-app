@@ -45,9 +45,9 @@ class PostgresClient:
             print(f"接続に失敗しました{e}")
             return False
 
-    def execute(self, query, values=None):
+    def execute(self, query, params=None):
         """SQLクエリを実行するメソッド"""
-        self.cur.execute(query, (values))
+        self.cur.execute(query, params)
         return self.cur
 
     def commit(self):
@@ -67,43 +67,11 @@ class DatabaseService:
 
     def __init__(self):
         self.client = PostgresClient()
-        self.conn = self.client.connect()
-
-    def make_sql(self):
-        sql = """CREATE TABLE locations (
-        locations_id INTEGER PRIMARY KEY,
-        place_name TEXT UNIQUE,
-        address TEXT,
-        latitude numeric,
-        longitude numeric
-        )"""
-        return sql
     
-    def create_table(self, sql):
+    def execute_query(self, query, params=None):
         try:
             if self.client.connect():
-                self.client.execute(sql)
-                self.client.commit()
-                self.client.close()
-                return  True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-
-
-
-
-    def get_id(self):
-        self.client.cur.execute("SELECT * FROM  places where id = 1")
-        rows = self.client.cur.fetchall()
-        for row in rows:
-            print(row)
-
-    def add_column(self):
-        try:
-            if self.client.connect():
-                self.client.execute("ALTER TABLE facility_genres ADD COLUMN name TEXT")
+                self.client.execute(query, params)
                 self.client.commit()
                 self.client.close()
                 return True
@@ -112,112 +80,4 @@ class DatabaseService:
             print(f"失敗しました。{e}")
             return False
 
-    def add_value(self, place_mane, address, latitude, longitude):
-        sql = "INSERT INTO places (name, address, latitude, longitude) VALUES (%s, %s, %s, %s)"
-        try:
-            if self.client.connect():
-                self.client.execute(sql, (place_mane, address, latitude, longitude))
-                self.client.commit()
-                self.client.close()
-                return True
-            return False
-        except Exception as e:
-            print(f"追加に失敗しました。{e}")
-            return False
-
-    def rename_column(self):
-        sql = "ALTER TABLE places RENAME COLUMN adress TO address"
-        try:
-            if self.client.connect():
-                self.client.execute(sql)
-                self.client.commit()
-                self.client.close()
-                return True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-
-    def re_type(self):
-        sql = "ALTER TABLE places ALTER COLUMN longitude TYPE NUMERIC USING longitude::NUMERIC"
-        try:
-            if self.client.connect():
-                self.client.execute(sql)
-                self.client.commit()
-                self.client.close()
-                return True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-
-    def drop_column(self):
-        sql = "ALTER TABLE places DROP COLUMN hogehoge"
-        try:
-            if self.client.connect():
-                self.client.execute(sql)
-                self.client.commit()
-                self.client.close()
-                return True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-    
-    def add_table(self):
-        sql = """CREATE TABLE facility_genres (
-        id SERIAL PRIMARY KEY,
-        main_genre VARCHAR(10),
-        sub_genre_1 VARCHAR(10),
-        sub_genre_2 VARCHAR(10)
-        )"""
-        try:
-            if self.client.connect():
-                self.client.execute(sql)
-                self.client.commit()
-                self.client.close()
-                return True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-        return False
-
-    def check_constraints(self):
-        sql = """SELECT table_name
-        , constraint_name
-        , constraint_type
-        FROM information_schema.table_constraints
-        WHERE table_name = 'places'
-        AND (constraint_type = 'PRIMARY KEY' OR constraint_type = 'FOREIGN KEY') ;"""
-        try:
-            if self.client.connect():
-                cursor = self.client.execute(sql)
-                results = cursor.fetchall()
-                self.client.commit()
-                self.client.close()
-                return results
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-        return False
-    
-    def configuring_foreign_key(self):
-        sql = """ALTER TABLE places
-        ADD CONSTRAINT fk_place_category
-        FOREIGN KEY (name) REFERENCES facility_genres(name);"""
-        try:
-            if self.client.connect():
-                cursor = self.client.execute(sql)
-                results = cursor.fetchall()
-                self.client.commit()
-                self.client.close()
-                return results
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-
-
-    def make_sql(self):
-        pass
 

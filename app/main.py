@@ -14,7 +14,8 @@ from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location
 from interface.input_parser import Interface, Interface_administrator, Interface_batch
 from calculation.distance_calculation import DistanceCalculator
-from DB.database import PostgresCredentials, PostgresClient, DatabaseService
+from DB.database import DatabaseService
+from SQL.postgresql import QueryBuilder
 from batch.preprocessing import DatabasePreprocessing
 
 app = FastAPI()
@@ -39,36 +40,12 @@ def mapping(place_name):
 
 
 def main():
-#     print(f"入力したい施設数の数を入力してください: x箇所")
-#     n = int(input())
-#     print(f"入力したい施設数の数: {n}箇所")
-#     demo = DatabasePreprocessing()
-
-#     for i in range(n):
-#         batch_place = demo.add_places(input())
-#         batch_latitude, batch_longitude, batch_address = demo.get_geocoding(
-#             batch_place.places[i]
-#         )
-#         is_demo = demo.add_database(
-#             batch_place.places[i], batch_address, batch_latitude, batch_longitude
-#         )
-#         print(is_demo)
-    # check_constraints = DatabaseService()
-    # # is_add_tabel = addtable.add_table()
-    # # print(is_add_tabel)
-    # is_check = check_constraints.configuring_foreign_key()
-    # print(is_check)
-
-    # cid_table_add_column = DatabaseService()
-    # is_add_column = cid_table_add_column.add_column()
-    # print(is_add_column)
-
-    create_locations = DatabaseService()
-    create_locations_sql = create_locations.make_sql()
-    print(create_locations_sql)
-    is_create = create_locations.create_table(create_locations_sql)
-    print(is_create)
-
+    dbhandler = DatabaseService()
+    queryhandler = QueryBuilder()
+    params = locations
+    create_new_table = queryhandler.create_table()
+    print(create_new_table)
+    dbhandler.execute_query(create_new_table, params)
 
 
 if __name__ == "__main__":
