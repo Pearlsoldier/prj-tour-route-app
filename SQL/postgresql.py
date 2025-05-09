@@ -7,15 +7,16 @@ class QueryBuilder:
     def __init__(self):
         pass
 
-    @property
+
     def create_table(self):
-        return """SELECT table_name
-        , constraint_name
-        , constraint_type
-        FROM information_schema.table_constraints
-        WHERE table_name = %s
-        AND (constraint_type = 'PRIMARY KEY' OR constraint_type = 'FOREIGN KEY');"""
-    
+        return """CREATE TABLE locations
+        (location_id INTEGER,
+        place_name TEXT,
+        address TEXT,
+        longitude NUMERIC,
+        latitude NUMERIC,
+        PRIMARY KEY(location_id));"""
+
     @property
     def add_record(self):
         return "INSERT INTO places (name, address, latitude, longitude) VALUES (%s, %s, %s, %s)"
