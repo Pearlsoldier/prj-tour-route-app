@@ -4,12 +4,12 @@ class QueryBuilder:
     データ挿入
 
     """
+
     def __init__(self):
         pass
 
-
-    def create_table(self):
-        return """CREATE TABLE locations
+    def create_table(self, table_name):
+        return f"""CREATE TABLE {table_name}
         (location_id INTEGER,
         place_name TEXT,
         address TEXT,
@@ -20,5 +20,3 @@ class QueryBuilder:
     @property
     def add_record(self):
         return "INSERT INTO places (name, address, latitude, longitude) VALUES (%s, %s, %s, %s)"
-
-

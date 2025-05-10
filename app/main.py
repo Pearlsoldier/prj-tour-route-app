@@ -39,29 +39,17 @@ def mapping(place_name):
         return e
 
 
-# def main():
-"""
-失敗しました。syntax error at or near "$1"
-LINE 1: CREATE TABLE $1
-構文エラーが発生
-%sや$1を使用できるはずができない。→このプレースホルダーについて勉強をおこなう。
-"""
-#     dbhandler = DatabaseService()
-#     queryhandler = QueryBuilder()
-#     table_name = "locations"
-#     params = (table_name,)
-#     create_new_table = queryhandler.create_table
-#     print(create_new_table)
-#     dbhandler.execute_query(create_new_table, params)
-
-
 def main():
-    dbhandler = DatabaseService()
-    queryhandler = QueryBuilder()
-    
-    create_new_table = queryhandler.create_table()
-    print(create_new_table)
-    dbhandler.execute_query(create_new_table)
+    # """
+    # DB操作の使用例
+    # 新しいテーブルを作成
+    # """
+    # dbhandler = DatabaseService()
+    # queryhandler = QueryBuilder()
+    # table_name = "hogehoge"
+    # create_new_table = queryhandler.create_table(table_name)
+    # print(create_new_table)
+    # dbhandler.execute_query(create_new_table)
 
 
 if __name__ == "__main__":

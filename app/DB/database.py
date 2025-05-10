@@ -57,7 +57,6 @@ class PostgresClient:
         self.cur.close()
 
 
-
 class DatabaseService:
     """
     PostgresClientを使って、
@@ -67,11 +66,11 @@ class DatabaseService:
 
     def __init__(self):
         self.client = PostgresClient()
-    
-    def execute_query(self, query, params=None):
+
+    def execute_query(self, query):
         try:
             if self.client.connect():
-                self.client.execute(query, params)
+                self.client.execute(query)
                 self.client.commit()
                 self.client.close()
                 return True
@@ -79,5 +78,3 @@ class DatabaseService:
         except Exception as e:
             print(f"失敗しました。{e}")
             return False
-
-
