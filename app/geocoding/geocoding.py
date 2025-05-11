@@ -36,6 +36,7 @@ class ReverseGeocoding:
         """
         address_response = requests.get(self.api_url.format(lat=lat, lon=lon))
         data = address_response.json()
+        print(data)
 
         if "results" in data:
             address = data["results"]["lv01Nm"]

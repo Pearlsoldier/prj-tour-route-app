@@ -15,7 +15,7 @@ from location.locations import Location
 from interface.input_parser import Interface, Interface_administrator, Interface_batch
 from calculation.distance_calculation import DistanceCalculator
 from DB.database import DatabaseService
-from SQL.postgresql import QueryBuilder
+from sql.postgresql import QueryBuilder
 from batch.preprocessing import DatabasePreprocessing
 
 app = FastAPI()
@@ -46,10 +46,38 @@ def main():
     # """
     # dbhandler = DatabaseService()
     # queryhandler = QueryBuilder()
-    # table_name = "hogehoge"
-    # create_new_table = queryhandler.create_table(table_name)
+    # table_name = "locations"
+    # create_new_table = queryhandler.create_parent_table(table_name)
     # print(create_new_table)
     # dbhandler.execute_query(create_new_table)
+    # table_name = "genres"
+    # create_new_cid_table = queryhandler.create_cid_table(table_name)
+    # print(create_new_cid_table)
+    # dbhandler.execute_query(create_new_cid_table)
+
+
+    
+    # batch_handler
+    # lon, lat, add = batch_handler.add_new_location(input_location)
+    # print(lon)
+
+    batch_handler = DatabasePreprocessing()
+    location_counts = int(input())
+    print(location_counts)
+    for i in range(location_counts):
+        location = batch_handler.add_new_location(input())
+        print(location.batch_locations[i])
+        batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
+        
+
+ 
+
+
+        
+
+    
+
+
 
 
 if __name__ == "__main__":

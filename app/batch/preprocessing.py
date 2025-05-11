@@ -12,23 +12,25 @@ class DatabasePreprocessing:
     """
 
     def __init__(self):
-        self.batch_place = Interface_batch()
+        self.batch_locations = Interface_batch()
 
-    def add_places(self, place):
-        self.batch_place.places.append(place)
-        return self.batch_place
+    def add_new_location(self, location):
+        self.batch_locations.batch_locations.append(location)
+        return self.batch_locations
 
-    def get_geocoding(self, place):
-        batch_coordinates = Geocoding().get_coordinate(place)
-        batch_location = Location(batch_coordinates, place)
+    def get_geocoding(self, location):
+        batch_coordinates = Geocoding().get_coordinate(location)
+        batch_location = Location(batch_coordinates, location)
         batch_lat = batch_location.latitude.value
         batch_lon = batch_location.longitude.value
 
         batch_reverse_coding = ReverseGeocoding()
         batch_address = batch_reverse_coding.get_address(batch_lat, batch_lon)
-        return batch_lat, batch_lon, batch_address
+        return batch_lon, batch_lat, batch_address
+    
+    def
 
-    def add_database(self, place, address, latitude, longitude):
+    def insert_location_datasets(self, id, location_name, address, longitude, latitude):
         batch_db = DatabaseService()
-        is_batch = batch_db.add_value(place, address, latitude, longitude)
+        is_batch = batch_db.add_value(id, location_name, address, longitude, latitude)
         return is_batch
