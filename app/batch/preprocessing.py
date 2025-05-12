@@ -27,8 +27,6 @@ class DatabasePreprocessing:
         batch_reverse_coding = ReverseGeocoding()
         batch_address = batch_reverse_coding.get_address(batch_lat, batch_lon)
         return batch_lon, batch_lat, batch_address
-    
-    def
 
     def insert_location_datasets(self, id, location_name, address, longitude, latitude):
         batch_db = DatabaseService()

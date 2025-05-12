@@ -3,6 +3,7 @@ import sys
 import os
 from rich.console import Console
 import pprint
+import uuid
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -68,7 +69,25 @@ def main():
         location = batch_handler.add_new_location(input())
         print(location.batch_locations[i])
         batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
+        location_id = uuid.uuid4()
+        print(location_id)
+
+        params = (
+            location_id,  # id
+            location.batch_locations[i],  # location_name
+            batch_address,  # address
+            batch_lon,  # longitude
+            batch_lat   # latitude
+        )
+        sql_handler = QueryBuilder()
+        query = sql_handler.insert_parent_datasets("locations")
+        dbhandler = DatabaseService()
+        is_insert = dbhandler.execute_query(query, params)
+        print(is_insert)
         
+
+
+
 
  
 

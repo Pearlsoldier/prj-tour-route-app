@@ -8,7 +8,7 @@ class QueryBuilder:
 
     def create_parent_table(self, table_name):
         return f"""CREATE TABLE {table_name}
-        (id UUID,
+        (id UUID DEFEAULT,
         location_name TEXT,
         address TEXT,
         longitude NUMERIC,
@@ -18,7 +18,7 @@ class QueryBuilder:
     def create_cid_table(self, table_name):
         return f"""CREATE TABLE {table_name}
         (location_id UUID REFERENCES locations(id),
-        id UUID,
+        id UUID),
         genre TEXT,
         PRIMARY KEY(id));"""
 
