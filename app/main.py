@@ -47,8 +47,8 @@ def main():
     # """
     # dbhandler = DatabaseService()
     # queryhandler = QueryBuilder()
-    # table_name = "locations"
-    # create_new_table = queryhandler.create_parent_table(table_name)
+    # table_name = "genres"
+    # create_new_table = queryhandler.create_cid_table(table_name)
     # print(create_new_table)
     # dbhandler.execute_query(create_new_table)
     # table_name = "genres"
@@ -64,26 +64,27 @@ def main():
 
     batch_handler = DatabasePreprocessing()
     location_counts = int(input())
-    print(location_counts)
-    for i in range(location_counts):
-        location = batch_handler.add_new_location(input())
-        print(location.batch_locations[i])
-        batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
-        location_id = uuid.uuid4()
-        print(location_id)
+    # print(location_counts)
+    # for i in range(location_counts):
+    #     location = batch_handler.add_new_location(input())
+    #     print(location.batch_locations[i])
+    #     batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
+    id = uuid.uuid4()
+    #     print(location_id)
+    location_id = "d688319f-5ea8-4807-8af8-8e568bd27c87"
+    genre = "historic_site"
+    params = (
+        location_id,  # id
+        id,
+        genre
+    )
+    sql_handler = QueryBuilder()
+    query = sql_handler.insert_cid_datasets(genre)
 
-        params = (
-            location_id,  # id
-            location.batch_locations[i],  # location_name
-            batch_address,  # address
-            batch_lon,  # longitude
-            batch_lat   # latitude
-        )
-        sql_handler = QueryBuilder()
-        query = sql_handler.insert_parent_datasets("locations")
-        dbhandler = DatabaseService()
-        is_insert = dbhandler.execute_query(query, params)
-        print(is_insert)
+    #     query = sql_handler.insert_parent_datasets("locations")
+    dbhandler = DatabaseService()
+    is_insert = dbhandler.execute_query(query, params)
+    print(is_insert)
         
 
 

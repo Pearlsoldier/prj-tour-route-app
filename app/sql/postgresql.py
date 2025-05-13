@@ -18,7 +18,7 @@ class QueryBuilder:
     def create_cid_table(self, table_name):
         return f"""CREATE TABLE {table_name}
         (location_id UUID REFERENCES locations(id),
-        id UUID),
+        id UUID,
         genre TEXT,
         PRIMARY KEY(id));"""
 
@@ -26,5 +26,5 @@ class QueryBuilder:
         return f"INSERT INTO {table_name} (id, location_name, address, longitude, latitude) VALUES (%s, %s, %s, %s, %s)"
     
     def insert_cid_datasets(self, table_name):
-        return f"INSERT INTO {table_name} (id, id, genre) VALUES (%s, %s, %s)"
+        return f"INSERT INTO {table_name} (location_id, id, genre) VALUES (%s, %s, %s)"
 

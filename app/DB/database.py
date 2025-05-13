@@ -67,7 +67,7 @@ class DatabaseService:
     def __init__(self):
         self.client = PostgresClient()
 
-    def execute_query(self, query, params):
+    def execute_query(self, query, params=None):
         try:
             if self.client.connect():
                 self.client.execute(query, params)
