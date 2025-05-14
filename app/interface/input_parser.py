@@ -31,6 +31,6 @@ class Interface_administrator:
     
 @dataclass
 class Interface_batch:
-    batch_locations: list[str] = field(default_factory=list)
-
-
+    place: str
+    location_id:  str
+    id: str

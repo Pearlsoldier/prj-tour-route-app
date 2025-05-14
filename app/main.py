@@ -62,29 +62,32 @@ def main():
     # lon, lat, add = batch_handler.add_new_location(input_location)
     # print(lon)
 
-    batch_handler = DatabasePreprocessing()
-    location_counts = int(input())
-    # print(location_counts)
-    # for i in range(location_counts):
-    #     location = batch_handler.add_new_location(input())
-    #     print(location.batch_locations[i])
-    #     batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
-    id = uuid.uuid4()
-    #     print(location_id)
-    location_id = "d688319f-5ea8-4807-8af8-8e568bd27c87"
-    genre = "historic_site"
-    params = (
-        location_id,  # id
-        id,
-        genre
-    )
-    sql_handler = QueryBuilder()
-    query = sql_handler.insert_cid_datasets(genre)
+    # batch_handler = DatabasePreprocessing()
+    # location_counts = int(input())
+    # # print(location_counts)
+    # # for i in range(location_counts):
+    # #     location = batch_handler.add_new_location(input())
+    # #     print(location.batch_locations[i])
+    # #     batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
+    # id = uuid.uuid4()
+    # #     print(location_id)
+    # location_id = "d688319f-5ea8-4807-8af8-8e568bd27c87"
+    # genre = "historic_site"
+    # params = (
+    #     location_id,  # id
+    #     id,
+    #     genre
+    # )
+    # sql_handler = QueryBuilder()
+    # query = sql_handler.insert_cid_datasets(genre)
 
-    #     query = sql_handler.insert_parent_datasets("locations")
-    dbhandler = DatabaseService()
-    is_insert = dbhandler.execute_query(query, params)
-    print(is_insert)
+    # #     query = sql_handler.insert_parent_datasets("locations")
+    # dbhandler = DatabaseService()
+    # is_insert = dbhandler.execute_query(query, params)
+    # print(is_insert)
+
+    place_name = input()
+    
         
 
 

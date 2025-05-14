@@ -37,3 +37,12 @@ class DatabasePreprocessing:
         batch_db = DatabaseService()
         is_batch = batch_db.add_value(location_id, id, genre)
         return is_batch
+
+
+class Cid_DatabasePreprocessing:
+    """
+
+    """
+
+    def __init__(self):
+        self.batch_locations = Interface_batch()
