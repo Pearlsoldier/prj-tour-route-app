@@ -86,8 +86,14 @@ def main():
     # is_insert = dbhandler.execute_query(query, params)
     # print(is_insert)
 
-    place_name = input()
-    
+    location_name = input()
+    sql_handler = QueryBuilder()
+    query = sql_handler.get_location_id()
+
+    database_handler = DatabaseService()
+    get_uuid = database_handler.execute_query(query, (location_name,))
+    print(get_uuid)
+
         
 
 

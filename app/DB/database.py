@@ -70,10 +70,11 @@ class DatabaseService:
     def execute_query(self, query, params=None):
         try:
             if self.client.connect():
-                self.client.execute(query, params)
+                cursor = self.client.execute(query, params)
+                result = cursor.fetchall()
                 self.client.commit()
                 self.client.close()
-                return True
+                return result
             return False
         except Exception as e:
             print(f"失敗しました。{e}")

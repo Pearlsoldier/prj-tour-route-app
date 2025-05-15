@@ -27,4 +27,6 @@ class QueryBuilder:
     
     def insert_cid_datasets(self, table_name):
         return f"INSERT INTO {table_name} (location_id, id, genre) VALUES (%s, %s, %s)"
-
+    
+    def get_location_id(self):
+        return "SELECT id FROM locations WHERE location_name = %s;"
