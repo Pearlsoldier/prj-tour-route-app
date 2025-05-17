@@ -23,19 +23,21 @@ class Interface:
 
 
 @dataclass
-class Interface_administrator:
+class InterfaceAdministrator:
     place: str
 
     def __str__(self):
         return self.place
-    
+
+
 @dataclass
-class Interface_batch:
+class InterfaceBatch:
     batch_locations: list[str] = field(default_factory=list)
 
+
 @dataclass
-class Cid_Interface_batch:
+class CidInterfaceBatch:
     location: str
+    genre_name: str
     location_id: str
     id: str
-

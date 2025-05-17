@@ -67,7 +67,7 @@ class DatabaseService:
     def __init__(self):
         self.client = PostgresClient()
 
-    def execute_query(self, query, params=None):
+    def execute_query_fetch(self, query, params=None):
         try:
             if self.client.connect():
                 cursor = self.client.execute(query, params)
@@ -75,6 +75,18 @@ class DatabaseService:
                 self.client.commit()
                 self.client.close()
                 return result
+            return False
+        except Exception as e:
+            print(f"失敗しました。{e}")
+            return False
+
+    def execute_query(self, query, params=None):
+        try:
+            if self.client.connect():
+                self.client.execute(query, params)
+                self.client.commit()
+                self.client.close()
+                return True
             return False
         except Exception as e:
             print(f"失敗しました。{e}")

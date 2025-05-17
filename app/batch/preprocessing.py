@@ -39,7 +39,7 @@ class DatabasePreprocessing:
         return is_batch
 
 
-class Cid_DatabasePreprocessing:
+class CidDatabasePreprocessing:
     """
 
     """

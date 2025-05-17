@@ -13,7 +13,12 @@ from location.management import LocationManager
 
 from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location
-from interface.input_parser import Interface, Interface_administrator, Interface_batch
+from interface.input_parser import (
+    Interface,
+    Interface_administrator,
+    Interface_batch,
+    Cid_Interface_batch,
+)
 from calculation.distance_calculation import DistanceCalculator
 from DB.database import DatabaseService
 from sql.postgresql import QueryBuilder
@@ -45,68 +50,31 @@ def main():
     # DB操作の使用例
     # 新しいテーブルを作成
     # """
-    # dbhandler = DatabaseService()
-    # queryhandler = QueryBuilder()
-    # table_name = "genres"
-    # create_new_table = queryhandler.create_cid_table(table_name)
-    # print(create_new_table)
-    # dbhandler.execute_query(create_new_table)
-    # table_name = "genres"
-    # create_new_cid_table = queryhandler.create_cid_table(table_name)
-    # print(create_new_cid_table)
-    # dbhandler.execute_query(create_new_cid_table)
-
-
-    
-    # batch_handler
-    # lon, lat, add = batch_handler.add_new_location(input_location)
-    # print(lon)
-
-    # batch_handler = DatabasePreprocessing()
-    # location_counts = int(input())
-    # # print(location_counts)
-    # # for i in range(location_counts):
-    # #     location = batch_handler.add_new_location(input())
-    # #     print(location.batch_locations[i])
-    # #     batch_lon, batch_lat, batch_address = batch_handler.get_geocoding(location.batch_locations[i])
-    # id = uuid.uuid4()
-    # #     print(location_id)
-    # location_id = "d688319f-5ea8-4807-8af8-8e568bd27c87"
-    # genre = "historic_site"
-    # params = (
-    #     location_id,  # id
-    #     id,
-    #     genre
-    # )
-    # sql_handler = QueryBuilder()
-    # query = sql_handler.insert_cid_datasets(genre)
-
-    # #     query = sql_handler.insert_parent_datasets("locations")
-    # dbhandler = DatabaseService()
-    # is_insert = dbhandler.execute_query(query, params)
-    # print(is_insert)
-
-    location_name = input()
+    dbhandler = DatabaseService()
+    table_name = "genres"
+    print("登録件数を入力してください")
+    batch_counts = int(input())
+    print(batch_counts)
     sql_handler = QueryBuilder()
-    query = sql_handler.get_location_id()
-
     database_handler = DatabaseService()
-    get_uuid = database_handler.execute_query(query, (location_name,))
-    print(get_uuid)
-
-        
-
-
-
-
- 
-
-
-        
-
-    
-
-
+    for i in range(batch_counts):
+        genres_id = uuid.uuid4()
+        print("対象施設を入力してください。locationsテーブルにあるものに限られます。")
+        location_name = input()
+        query = sql_handler.get_location_id()
+        get_uuid = database_handler.execute_query_fetch(query, (location_name,))
+        batched_loction = get_uuid[0][0]
+        print("ジャンルを入力してください")
+        genre_name = input()
+        cid_data_sets = Cid_Interface_batch(
+            location=location_name,
+            genre_name=genre_name,
+            location_id=batched_loction,
+            id=genres_id,
+        )
+        batched_query = sql_handler.insert_cid_datasets(table_name)
+        params = (batched_loction, genres_id, genre_name)
+        dbhandler.execute_query(batched_query, params)
 
 
 if __name__ == "__main__":
