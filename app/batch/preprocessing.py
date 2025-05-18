@@ -1,4 +1,4 @@
-from interface.input_parser import Interface_batch
+from interface.input_parser import InterfaceBatch
 from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location, Coordinate
 from DB.database import DatabaseService
@@ -12,7 +12,7 @@ class DatabasePreprocessing:
     """
 
     def __init__(self):
-        self.batch_locations = Interface_batch()
+        self.batch_locations = InterfaceBatch()
 
     def add_new_location(self, location):
         self.batch_locations.batch_locations.append(location)
@@ -45,4 +45,4 @@ class CidDatabasePreprocessing:
     """
 
     def __init__(self):
-        self.batch_locations = Interface_batch()
+        self.batch_locations = InterfaceBatch()
