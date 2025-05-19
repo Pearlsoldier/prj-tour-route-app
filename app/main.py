@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from location.management import LocationManager
 
 from geocoding.geocoding import Geocoding, ReverseGeocoding
-from location.locations import Location
+from location.locations import Locations
 from interface.input_parser import (
     Interface,
     InterfaceAdministrator,
@@ -75,15 +75,21 @@ def main():
     #     batched_query = sql_handler.insert_cid_datasets(table_name)
     #     params = (batched_loction, genres_id, genre_name)
     #     dbhandler.execute_query(batched_query, params)
-    print("開始地点を入力してください。")
-    location = input()
-    print("移動手段を入力してください。")
-    transport = input()
-    print("所要時間を入力してください。")
-    transit_time = input()
-    candidate_location = Interface(location, transport, transit_time)
-    hoge = get_coordinates(candidate_location.location)
-    print(hoge)
+    # print("開始地点を入力してください。")
+    # location = input()
+    # print("移動手段を入力してください。")
+    # transport = input()
+    # print("所要時間を入力してください。")
+    # transit_time = input()
+    # candidate_location = Interface(location, transport, transit_time)
+    # print(candidate_location.location)
+    # get_location = candidate_location.location
+    # geocoding = Geocoding()
+    # hoge = geocoding.get_coordinate(get_location)
+    # print(hoge)
+    tky_sta = Locations("東京駅")
+    print(tky_sta.cordinate)
+    print(tky_sta.re_geocoding)
 
 
 
