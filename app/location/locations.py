@@ -23,11 +23,16 @@ class Location:
     def __init__(self, location: str) -> None:
         self._location = location
         geocoding = Geocoding()
-        self.cordinates = geocoding.get_coordinate(location)
-        self._longitude = self.cordinate[1]
-        self._latitude = self.cordinate[0]
+        self._cordinates = geocoding.get_coordinate(location)
+        self._longitude = self._cordinates[0]
+        self._latitude = self._cordinates[1]
         reversegeocoding = ReverseGeocoding()
-        self._address = reversegeocoding.get_address(self.cordinate[1], self.cordinate[0])
+        self._address = reversegeocoding.get_address(self._cordinates[0], self._cordinates[1])
+
+    @property
+    def cordinates(self):
+        return self._cordinates
+
 
     @property
     def latitude(self) -> Coordinate:

@@ -16,14 +16,13 @@ class DistanceCalculator:
     def __init__(self, location1, location2):
         OUTPUT_TYPE = "json"
         ELLIPSOID = "GRS80"
-        lat1 = location1.lat
-        lon1 = location1.lon
-        lat2 = location2.lat
-        lon2 = location2.lon
+        lat1 = location1.latitude
+        lon1 = location1.longitude
+        lat2 = location2.latitude
+        lon2 = location2.longitude
         self.cal_api = f"https://vldb.gsi.go.jp/sokuchi/surveycalc/surveycalc/bl2st_calc.pl?outputType={OUTPUT_TYPE}&ellipsoid={ELLIPSOID}&latitude1={lat1}&longitude1={lon1}&latitude2={lat2}&longitude2={lon2}"
 
-
-    def calculate(self) -> float:
+    def distance_calculate_distance(self) -> float:
         self.response = requests.get(self.cal_api)
         self.data = self.response.json()
         self.output = self.data["OutputData"]

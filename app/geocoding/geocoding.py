@@ -29,14 +29,13 @@ class ReverseGeocoding:
     def __init__(self):
         self.api_url = "https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat={lat}&lon={lon}"
 
-    def get_address(self, lat, lon):
+    def get_address(self, lon, lat):
         """
         リバースジオコーディング
         国土地理院APIを使用して緯度経度から住所を取得する関数。
         """
-        address_response = requests.get(self.api_url.format(lat=lat, lon=lon))
+        address_response = requests.get(self.api_url.format(lon=lon, lat=lat))
         data = address_response.json()
-        print(data)
 
         if "results" in data:
             address = data["results"]["lv01Nm"]
