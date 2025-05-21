@@ -19,10 +19,12 @@ from interface.input_parser import (
     InterfaceBatch,
     CidInterfaceBatch,
 )
-from calculation.metrics import Metrics
+
 from DB.database import DatabaseService
 from sql.postgresql import QueryBuilder
 from batch.preprocessing import DatabasePreprocessing
+
+from metrics_module.metrics_Interface import MetricsDataBase, LocationMetricsDataSets
 
 app = FastAPI()
 
@@ -46,19 +48,11 @@ def mapping(place_name):
 
 
 def main():
-    tky_sta = Location("東京駅")
-    tky_tower = Location("東京タワー")
-
-    print(tky_sta.cordinates)
-    # print(tky_sta.longitude)
-    # print(tky_sta.location)
-    # print(tky_sta.address)
-    cal = Metrics(tky_sta, tky_tower)
-    print(cal.distance)
-
-
-
-
+    metrics_handler = LocationMetricsDataSets(
+        start_location="東京駅", end_location="東京タワー"
+    )
+    start = metrics_handler.start_location
+    print(start)
 
 
 if __name__ == "__main__":
