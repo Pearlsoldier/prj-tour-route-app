@@ -1,24 +1,18 @@
 from dataclasses import dataclass
 from location.locations import Location
 
-
-class MetricsDataBase:
-    def __init__(self):
-        pass
-
-
 @dataclass
-class DistanceLocationDataSets(MetricsDataBase):
+class DistanceLocationDataSets:
     """
     ２地点間の距離を扱うクラス
     """
 
-    start_location: str
-    end_location: str
+    start_location: Location
+    end_location: Location
 
 
 @dataclass
-class DistanceMetrics(MetricsDataBase):
+class DistanceMetrics:
     """
     きはじの距離を扱うクラス
     """
@@ -27,7 +21,7 @@ class DistanceMetrics(MetricsDataBase):
 
 
 @dataclass
-class SpeedMetrics(MetricsDataBase):
+class SpeedMetrics:
     """
     きはじの速さを扱うクラス
     """
@@ -36,7 +30,7 @@ class SpeedMetrics(MetricsDataBase):
 
 
 @dataclass
-class TimeMetrics(MetricsDataBase):
+class TimeMetrics:
     """
     きはじの時間を扱うクラス
     """

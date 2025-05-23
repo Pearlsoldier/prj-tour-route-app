@@ -24,7 +24,8 @@ from DB.database import DatabaseService
 from sql.postgresql import QueryBuilder
 from batch.preprocessing import DatabasePreprocessing
 
-from metrics_module.metrics_Interface import MetricsDataBase, LocationMetricsDataSets
+from metrics_module.metrics_Interface import  DistanceLocationDataSets
+from metrics_module.calculation import calculate_locations_distance
 
 app = FastAPI()
 
@@ -48,11 +49,12 @@ def mapping(place_name):
 
 
 def main():
-    metrics_handler = LocationMetricsDataSets(
-        start_location="東京駅", end_location="東京タワー"
-    )
-    start = metrics_handler.start_location
-    print(start)
+    tky_tow = Location("東京タワー")
+    tky_sta = Location("東京駅")
+    location_handler = DistanceLocationDataSets(start_location=tky_sta, end_location=tky_tow)
+    print(location_handler.start_location)
+    result = calculate_locations_distance(location_handler.start_location, location_handler.end_location)
+    print(result)
 
 
 if __name__ == "__main__":
