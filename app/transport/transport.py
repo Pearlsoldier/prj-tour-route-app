@@ -1,8 +1,9 @@
-from dataclasses import dataclass
+from enum import Enum
 
-@dataclass
-class Transport:
-    transport_type: str # 移動手段について
-
+class TransportType(Enum):
+    WALKING = "徒歩"
+    BICYCLE = "自転車"
+    CAR = "車"
+    
     def __str__(self):
-        return str(self.transport_type)
+        return self.value
