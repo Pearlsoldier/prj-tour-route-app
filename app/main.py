@@ -20,16 +20,16 @@ from interface.input_parser import (
     CidInterfaceBatch,
 )
 
+from transport.transport import Walk
+from transittime.timerequired import TimeRequired
 from DB.database import DatabaseService
 from sql.postgresql import QueryBuilder
 from batch.preprocessing import DatabasePreprocessing
-from metrics_module.metrics_Interface import (
-    DistanceLocationDataSets,
-    DistanceMetrics,
-    SpeedMetrics,
-    TimeMetrics
-)
-from metrics_module.calculation import calculate_locations_distance
+
+from metrics_module.metrics import LocationsDistance
+from metrics_module.metrics import Speed
+from metrics_module.metrics import WithinRange
+from metrics_module.metrics import Time
 
 app = FastAPI()
 
@@ -53,20 +53,7 @@ def mapping(place_name):
 
 
 def main():
-    # tky_tow = Location("東京タワー")
-    # tky_sta = Location("東京駅")
-    # location_handler = DistanceLocationDataSets(start_location=tky_sta, end_location=tky_tow)
-    # print(location_handler.start_location)
-    # result = calculate_locations_distance(location_handler.start_location, location_handler.end_location)
-    # print(result)
-    walk = SpeedMetrics(700)
-    transit = TimeMetrics(20)
-    distance = walk.speed * transit.time
-    print(distance)
-    within_range = DistanceMetrics(distance)
-    print(within_range.distance)
-    print(type(within_range.distance))
-
+    pass
 
 
 if __name__ == "__main__":

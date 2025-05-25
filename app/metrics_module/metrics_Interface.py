@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 from location.locations import Location
 
+from transport.transport import Walk
+from transport.transport import Bicycle
+from transport.transport import Car
+
+from transittime.timerequired import TimeRequired
+
+
 @dataclass
 class DistanceLocationDataSets:
     """
@@ -17,7 +24,7 @@ class DistanceMetrics:
     きはじの距離を扱うクラス
     """
 
-    distance: float
+    distance: int
 
 
 @dataclass
@@ -26,7 +33,9 @@ class SpeedMetrics:
     きはじの速さを扱うクラス
     """
 
-    speed: int
+    walk_speed: Walk.movement_speed
+    Bicycle_speed: Bicycle.movement_speed
+    car_speed: Car.movement_speed
 
 
 @dataclass
@@ -35,4 +44,4 @@ class TimeMetrics:
     きはじの時間を扱うクラス
     """
 
-    time: int
+    time: TimeRequired
