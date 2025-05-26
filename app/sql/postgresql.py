@@ -30,3 +30,6 @@ class QueryBuilder:
 
     def get_location_id(self):
         return "SELECT id FROM locations WHERE location_name = %s;"
+
+    def get_locations_table(self):
+        return "SELECT * FROM locations"
