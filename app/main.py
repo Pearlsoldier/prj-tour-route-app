@@ -31,6 +31,11 @@ from metrics_module.metrics import Speed
 from metrics_module.metrics import WithinRange
 from metrics_module.metrics import Time
 
+from metrics_module.metrics_Interface import DistanceLocationDataSets
+from metrics_module.metrics_Interface import DistanceMetrics
+
+from transport.transport import Car
+
 app = FastAPI()
 
 
@@ -53,7 +58,24 @@ def mapping(place_name):
 
 
 def main():
-    pass
+    # 移動手段と所有時間から移動可能圏内を導く
+    input_handler = Interface(location="東京駅", transport="Car", transit_time=30)
+    print(input_handler.transit_time)
+    distance_locations_handler = DistanceLocationDataSets
+    trans_car = Car()
+
+    within_tky_sta = WithinRange(trans_car.movement_speed, input_handler.transit_time)
+    print(within_tky_sta.within_range)
+
+
+
+    # sql_handler = QueryBuilder()
+    # locations_query = sql_handler.get_locations_table() 
+    # db_handler = DatabaseService()
+    # locations_table = db_handler.execute_query_fetch(locations_query)
+    # locations_table
+
+
 
 
 if __name__ == "__main__":

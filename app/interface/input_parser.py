@@ -17,9 +17,8 @@ class Interface:
     location: str
     transport: str
     transit_time: str
-
-    # def __str__(self):
-    #     return {"location": self.location, "transport": self.transport, "transit_time": self.transit_time}
+    def __str__(self):
+        return {"location": self.location, "transport": self.transport, "transit_time": self.transit_time}
 
 
 @dataclass

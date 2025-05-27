@@ -27,4 +27,4 @@ class Bicycle(TransportType):
 class Car(TransportType):
     @property
     def movement_speed(self) -> int:
-        return 280
+        return int(280)
