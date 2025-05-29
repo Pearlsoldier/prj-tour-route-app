@@ -58,24 +58,31 @@ def mapping(place_name):
 
 
 def main():
+    def is_accessible(locations_distance: int, within_range: int):
+        return locations_distance < within_range
+
     # 移動手段と所有時間から移動可能圏内を導く
+    sql_handler = QueryBuilder()
+    locations_query = sql_handler.get_locations()
+    db_handler = DatabaseService()
+    locations_table = db_handler.execute_query_fetch(locations_query)
+    within_range_locations = []
+
     input_handler = Interface(location="東京駅", transport="Car", transit_time=30)
     print(input_handler.transit_time)
-    distance_locations_handler = DistanceLocationDataSets
+
     trans_car = Car()
 
     within_tky_sta = WithinRange(trans_car.movement_speed, input_handler.transit_time)
     print(within_tky_sta.within_range)
 
+    print(len(locations_table))
+    for i in range(len(locations_table)):
+        location = locations_table[i]
+        print(location[0])
 
-
-    # sql_handler = QueryBuilder()
-    # locations_query = sql_handler.get_locations_table() 
-    # db_handler = DatabaseService()
-    # locations_table = db_handler.execute_query_fetch(locations_query)
-    # locations_table
-
-
+    # locations = locations_table[0]
+    # print(type(locations[0]))
 
 
 if __name__ == "__main__":
