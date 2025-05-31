@@ -58,7 +58,7 @@ def mapping(place_name):
 
 
 def main():
-    def is_accessible(locations_distance: int, within_range: int):
+    def is_accessible(locations_distance: float, within_range: float):
         return locations_distance < within_range
 
     # 移動手段と所有時間から移動可能圏内を導く
@@ -77,9 +77,23 @@ def main():
     print(within_tky_sta.within_range)
 
     print(len(locations_table))
+    start_location = Location(input_handler.location)
+    # main.pyで確認
     for i in range(len(locations_table)):
         location = locations_table[i]
-        print(location[0])
+        end_location = Location(location[0])
+        if input_handler.location != end_location:
+            pass
+            locations_distance = LocationsDistance(start_location=start_location, end_location=end_location)
+            within_range = float(within_tky_sta.within_range)
+            distance = float(locations_distance.locations_distance)
+            print(type(within_range))
+            print(type(distance))
+            bool = is_accessible(locations_distance=distance, within_range=within_range)
+            print(bool)
+
+
+
 
     # locations = locations_table[0]
     # print(type(locations[0]))
