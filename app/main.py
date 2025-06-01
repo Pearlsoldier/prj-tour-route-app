@@ -14,7 +14,6 @@ from location.management import LocationManager
 from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location
 from interface.input_parser import (
-    Interface,
     InterfaceAdministrator,
     InterfaceBatch,
     CidInterfaceBatch,
@@ -58,7 +57,7 @@ def mapping(place_name):
 
 
 def main():
-    def is_accessible(locations_distance: float, within_range: float):
+    def is_accessible(locations_distance: float, within_range: int):
         return locations_distance < within_range
 
     # 移動手段と所有時間から移動可能圏内を導く
@@ -68,35 +67,30 @@ def main():
     locations_table = db_handler.execute_query_fetch(locations_query)
     within_range_locations = []
 
-    input_handler = Interface(location="東京駅", transport="Car", transit_time=30)
-    print(input_handler.transit_time)
+    input = {"location": "東京駅", "transport": "Car", "transit_time": 1}
+    print(input["location"])
+    start_location = input["location"]
 
     trans_car = Car()
 
-    within_tky_sta = WithinRange(trans_car.movement_speed, input_handler.transit_time)
+    within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
     print(within_tky_sta.within_range)
-
-    print(len(locations_table))
-    start_location = Location(input_handler.location)
-    # main.pyで確認
     for i in range(len(locations_table)):
         location = locations_table[i]
-        end_location = Location(location[0])
-        if input_handler.location != end_location:
-            pass
-            locations_distance = LocationsDistance(start_location=start_location, end_location=end_location)
-            within_range = float(within_tky_sta.within_range)
-            distance = float(locations_distance.locations_distance)
-            print(type(within_range))
-            print(type(distance))
-            bool = is_accessible(locations_distance=distance, within_range=within_range)
-            print(bool)
-
-
-
-
-    # locations = locations_table[0]
-    # print(type(locations[0]))
+        db_location = Location(location[0])
+        end_location = db_location._location
+        if start_location == end_location:
+            print(f"start : {start_location}")
+            print(f"end : {end_location}")
+            continue
+        locations_distance = LocationsDistance(
+            start_location=start_location, end_location=end_location
+        )
+        within_range = within_tky_sta.within_range
+        distance = locations_distance.locations_distance
+        if is_accessible(locations_distance=distance, within_range=within_range):
+            within_range_locations.append(end_location)
+        print(within_range_locations)
 
 
 if __name__ == "__main__":

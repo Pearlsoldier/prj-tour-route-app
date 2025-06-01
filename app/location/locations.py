@@ -20,6 +20,7 @@ class Location:
     longitude: 経度
     latitude: 緯度
     """
+
     def __init__(self, location: str) -> None:
         self._location = location
         geocoding = Geocoding()
@@ -27,12 +28,13 @@ class Location:
         self._longitude = self._cordinates[0]
         self._latitude = self._cordinates[1]
         reversegeocoding = ReverseGeocoding()
-        self._address = reversegeocoding.get_address(self._cordinates[0], self._cordinates[1])
+        self._address = reversegeocoding.get_address(
+            self._cordinates[0], self._cordinates[1]
+        )
 
     @property
     def cordinates(self):
         return self._cordinates
-
 
     @property
     def latitude(self) -> Coordinate:
@@ -49,6 +51,3 @@ class Location:
     @property
     def address(self) -> str:
         return self._address
-
-
-

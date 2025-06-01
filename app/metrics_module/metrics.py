@@ -14,7 +14,7 @@ class LocationsDistance:
 class WithinRange:
     """所要時間と移動速度から割り出した圏内"""
 
-    def __init__(self, speed: int, time: int):
+    def __init__(self, speed: int, time: int) -> int:
         self.within_range = calc_distance(speed, time)
 
 
