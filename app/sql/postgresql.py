@@ -36,3 +36,6 @@ class QueryBuilder:
     
     def get_locations(self):
         return "SELECT location_name FROM locations"
+    
+    def get_genre(self, location_id):
+        return "SELECT genre FROM genres where  location_id = %s"

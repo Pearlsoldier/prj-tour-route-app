@@ -62,9 +62,11 @@ def main():
 
     # 移動手段と所有時間から移動可能圏内を導く
     sql_handler = QueryBuilder()
+    locations_tabale_query = sql_handler.get_locations_table()
     locations_query = sql_handler.get_locations()
     db_handler = DatabaseService()
-    locations_table = db_handler.execute_query_fetch(locations_query)
+    locations_table = db_handler.execute_query_fetch(locations_tabale_query)
+    location_name = db_handler.execute_query_fetch(locations_query)
     within_range_locations = []
 
     input = {"location": "東京駅", "transport": "Car", "transit_time": 1}
@@ -75,22 +77,30 @@ def main():
 
     within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
     print(within_tky_sta.within_range)
-    for i in range(len(locations_table)):
-        location = locations_table[i]
+    print(locations_table[0][0])
+    for i in range(len(location_name)):
+        location = location_name[i]
         db_location = Location(location[0])
         end_location = db_location._location
+
+
         if start_location == end_location:
             print(f"start : {start_location}")
             print(f"end : {end_location}")
             continue
-        locations_distance = LocationsDistance(
-            start_location=start_location, end_location=end_location
-        )
-        within_range = within_tky_sta.within_range
-        distance = locations_distance.locations_distance
-        if is_accessible(locations_distance=distance, within_range=within_range):
-            within_range_locations.append(end_location)
-        print(within_range_locations)
+        id_query = sql_handler.get_location_id
+        print(locations_table[0][0])
+        genres_table = db_handler.execute_query_fetch(id_query, params=(locations_table[0][0],))
+        print(genres_table)
+
+        # locations_distance = LocationsDistance(
+        #     start_location=start_location, end_location=end_location
+        # )
+        # within_range = within_tky_sta.within_range
+        # distance = locations_distance.locations_distance
+        # if is_accessible(locations_distance=distance, within_range=within_range):
+        #     within_range_locations.append(end_location)
+        # print(within_range_locations)
 
 
 if __name__ == "__main__":
