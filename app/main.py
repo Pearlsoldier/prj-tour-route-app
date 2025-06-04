@@ -88,9 +88,9 @@ def main():
             print(f"start : {start_location}")
             print(f"end : {end_location}")
             continue
-        id_query = sql_handler.get_location_id
+        get_genres_query = sql_handler.get_genres(locations_table[0][0])
         print(locations_table[0][0])
-        genres_table = db_handler.execute_query_fetch(id_query, params=(locations_table[0][0],))
+        genres_table = db_handler.execute_query_fetch(get_genres_query, params=(locations_table[0][0],))
         print(genres_table)
 
         # locations_distance = LocationsDistance(

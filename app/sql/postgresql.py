@@ -37,5 +37,14 @@ class QueryBuilder:
     def get_locations(self):
         return "SELECT location_name FROM locations"
     
-    def get_genre(self, location_id):
-        return "SELECT genre FROM genres where  location_id = %s"
+    def get_genres(self, location_id):
+        return """
+        SELECT 
+            l.id,
+            l.location_name,
+            STRING_AGG(g.genre, ',') as genre
+        FROM locations as l
+        LEFT JOIN genres g ON l.id = g.location_id
+        where l.id = %s
+        GROUP BY l.id, l.location_name;
+        """
