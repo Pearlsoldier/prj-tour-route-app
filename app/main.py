@@ -63,44 +63,40 @@ def main():
     # 移動手段と所有時間から移動可能圏内を導く
     sql_handler = QueryBuilder()
     locations_tabale_query = sql_handler.get_locations_table()
-    locations_query = sql_handler.get_locations()
     db_handler = DatabaseService()
     locations_table = db_handler.execute_query_fetch(locations_tabale_query)
-    location_name = db_handler.execute_query_fetch(locations_query)
+    # print(f"locations_table: {locations_table}")
     within_range_locations = []
 
     input = {"location": "東京駅", "transport": "Car", "transit_time": 1}
-    print(input["location"])
     start_location = input["location"]
 
     trans_car = Car()
 
     within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
-    print(within_tky_sta.within_range)
-    print(locations_table[0][0])
-    for i in range(len(location_name)):
-        location = location_name[i]
-        db_location = Location(location[0])
-        end_location = db_location._location
+    print(len(locations_table))
+    for i in range(len(locations_table)):
+        locations_name = locations_table[i][1]
+        locations_id = locations_table[i][0]
+        print(locations_id)
+        end_location = locations_name
 
 
         if start_location == end_location:
             print(f"start : {start_location}")
             print(f"end : {end_location}")
             continue
-        get_genres_query = sql_handler.get_genres(locations_table[0][0])
-        print(locations_table[0][0])
-        genres_table = db_handler.execute_query_fetch(get_genres_query, params=(locations_table[0][0],))
-        print(genres_table)
+        get_genres_query = sql_handler.get_genres(end_location)
+        genres_table = db_handler.execute_query_fetch(get_genres_query, params=(locations_table[i][0],))
 
-        # locations_distance = LocationsDistance(
-        #     start_location=start_location, end_location=end_location
-        # )
-        # within_range = within_tky_sta.within_range
-        # distance = locations_distance.locations_distance
-        # if is_accessible(locations_distance=distance, within_range=within_range):
-        #     within_range_locations.append(end_location)
-        # print(within_range_locations)
+        locations_distance = LocationsDistance(
+            start_location=start_location, end_location=end_location
+        )
+        within_range = within_tky_sta.within_range
+        distance = locations_distance.locations_distance
+        if is_accessible(locations_distance=distance, within_range=within_range):
+            within_range_locations.append(end_location)
+        print(within_range_locations)
 
 
 if __name__ == "__main__":
