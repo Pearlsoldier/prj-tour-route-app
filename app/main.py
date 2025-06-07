@@ -68,7 +68,7 @@ def main():
     # print(f"locations_table: {locations_table}")
     within_range_locations = []
 
-    input = {"location": "東京駅", "transport": "Car", "transit_time": 1}
+    input = {"location": "東京駅", "transport": "Car", "transit_time": 10}
     start_location = input["location"]
 
     trans_car = Car()

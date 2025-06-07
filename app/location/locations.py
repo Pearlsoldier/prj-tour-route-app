@@ -51,3 +51,19 @@ class Location:
     @property
     def address(self) -> str:
         return self._address
+    
+    class AccessibleLocation:
+        """
+        移動可能圏内の施設情報です。
+        """
+        def __init__(self, location, genre, travel_time):
+            self._location = location
+        
+        @property
+        def accsessible_location(self) -> str:
+            return self._location
+        
+        @property
+        def genres(self) -> list:
+            return self._genres
+
