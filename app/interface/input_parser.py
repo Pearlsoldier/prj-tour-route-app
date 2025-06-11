@@ -26,7 +26,7 @@ class InterfaceBatch:
 
 
 @dataclass
-class CidInterfaceBatch:
+class CidInterfaceBatch():
     location: str
     genre_name: str
     location_id: str
