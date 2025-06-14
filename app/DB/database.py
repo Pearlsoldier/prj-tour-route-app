@@ -54,7 +54,10 @@ class PostgresClient:
         self.conn.commit()
 
     def close(self):
-        self.cur.close()
+        if self.cur:
+            self.cur.close()
+        if self.conn:
+            self.conn.close()
 
 
 class DatabaseService:
@@ -91,3 +94,23 @@ class DatabaseService:
         except Exception as e:
             print(f"失敗しました。{e}")
             return False
+
+    # def execute_query_fetch(self, query, params=None):
+    #     try:
+    #         print(f"Debug - 受け取ったQuery: {repr(query)}")
+    #         print(f"Debug - 受け取ったParams: {params}")
+    #         print(f"Debug - Params type: {type(params)}")
+
+    #         if self.client.connect():
+    #             print("Debug - 接続成功")
+    #             cursor = self.client.execute(query, params)
+    #             print("Debug - クエリ実行後")
+    #             result = cursor.fetchall()
+    #             self.client.commit()
+    #             self.client.close()
+    #             return result
+    #         return False
+    #     except Exception as e:
+    #         print(f"失敗しました。{e}")
+    #         print(f"Debug - エラーの詳細: {type(e).__name__}")
+    #         return False

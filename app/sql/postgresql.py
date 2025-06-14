@@ -33,10 +33,10 @@ class QueryBuilder:
 
     def get_locations_table(self):
         return "SELECT * FROM locations"
-    
+
     def get_locations(self):
         return "SELECT location_name FROM locations"
-    
+
     def get_genres(self, location_id):
         return """
         SELECT 
