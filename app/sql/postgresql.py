@@ -22,11 +22,11 @@ class QueryBuilder:
         genre TEXT,
         PRIMARY KEY(id));"""
 
-    def insert_parent_datasets(self, table_name):
-        return f"INSERT INTO {table_name} (id, location_name, address, longitude, latitude) VALUES (%s, %s, %s, %s, %s)"
+    def insert_parent_datasets(self):
+        return f"INSERT INTO locations (id, location_name, address, longitude, latitude) VALUES (%s, %s, %s, %s, %s)"
 
-    def insert_cid_datasets(self, table_name):
-        return f"INSERT INTO {table_name} (location_id, id, genre) VALUES (%s, %s, %s)"
+    def insert_cid_datasets(self):
+        return f"INSERT INTO genres (location_id, id, genre) VALUES (%s, %s, %s)"
 
     def get_location_id(self):
         return "SELECT id FROM locations WHERE location_name = %s;"
@@ -42,9 +42,8 @@ class QueryBuilder:
         SELECT 
             l.id,
             l.location_name,
-            STRING_AGG(g.genre, ',') as genre
+            g.genre
         FROM locations as l
         LEFT JOIN genres g ON l.id = g.location_id
-        where l.id = %s
-        GROUP BY l.id, l.location_name;
+        WHERE l.id = %s;
         """

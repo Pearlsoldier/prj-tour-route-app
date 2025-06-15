@@ -17,7 +17,6 @@ from preprocessing import DatabasePreprocessing
 def main():
 
     sql_handler = QueryBuilder()
-
     uuid.uuid4
     # batch_insert = sql_handler.insert_cid_datasets()
     locations_tabale_query = sql_handler.get_locations_table()
@@ -32,6 +31,28 @@ def main():
         genres = sql_handler.get_genres(locations_table[i][0])
         locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
         print(locations_genres)
+
+    # genresの追加
+    # id = uuid.uuid4()
+    # print(id)
+    # genre = "レジャー"
+    # tko_ste_gal = sql_handler.insert_cid_datasets()
+    # locations_genres = db_handler.execute_query(tko_ste_gal, (location_id, id, genre))
+    # print(locations_genres)
+
+    # print(locations_table[5][0])
+    # print(locations_table[5][1])
+    # location_id = str(locations_table[5][0])
+    # genres = sql_handler.get_genres(locations_table[5][0])
+    # locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
+    # print(locations_genres)
+
+
+
+
+
+
+
 
     # for i in range(len(locations_table)):
     #     print(locations_table[i][0])

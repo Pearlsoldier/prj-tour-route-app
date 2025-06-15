@@ -57,55 +57,59 @@ def mapping(place_name):
 
 
 def main():
-    
-    # def is_accessible(locations_distance: float, within_range: int):
-    #     return locations_distance < within_range
 
-    # # 移動手段と所有時間から移動可能圏内を導く
-    # sql_handler = QueryBuilder()
-    # locations_tabale_query = sql_handler.get_locations_table()
-    # db_handler = DatabaseService()
-    # locations_table = db_handler.execute_query_fetch(locations_tabale_query)
-    # print(f"locations_table: {locations_table}")
-    # print(f"locations_table: {locations_table[0]}")
-    # within_range_locations = []
+    def is_accessible(locations_distance: float, within_range: int):
+        return locations_distance < within_range
 
-    # input = {"location": "東京駅", "transport": "Car", "transit_time": 3}
-    # start_location = input["location"]
+    # 移動手段と所有時間から移動可能圏内を導く
+    sql_handler = QueryBuilder()
+    locations_tabale_query = sql_handler.get_locations_table()
+    db_handler = DatabaseService()
+    locations_table = db_handler.execute_query_fetch(locations_tabale_query)
+    print(f"locations_table: {locations_table}")
+    print(f"locations_table: {locations_table[0]}")
+    within_range_locations = []
 
-    # trans_car = Car()
+    input = {"location": "東京駅", "transport": "Car", "transit_time": 3}
+    start_location = input["location"]
 
-    # within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
-    # for i in range(len(locations_table)):
-    #     locations_name = locations_table[i][1]
-    #     locations_id = locations_table[i][0]
-    #     end_location = locations_name
+    trans_car = Car()
 
+    within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
+    for i in range(len(locations_table)):
+        locations_name = locations_table[i][1]
+        locations_id = locations_table[i][0]
+        end_location = locations_name
 
-    #     if start_location == end_location:
-    #         print(f"end : {end_location}")
-    #         continue
-    #     get_genres_query = sql_handler.get_genres(end_location)
-    #     genres_table = db_handler.execute_query_fetch(get_genres_query, params=(locations_table[i][0],))
+        if start_location == end_location:
+            print(f"end : {end_location}")
+            continue
+        get_genres_query = sql_handler.get_genres(end_location)
+        genres_table = db_handler.execute_query_fetch(
+            get_genres_query, params=(locations_table[i][0],)
+        )
+        locations_distance = LocationsDistance(
+            start_location=start_location, end_location=end_location
+        )
+        within_range = within_tky_sta.within_range
+        distance = locations_distance.locations_distance
+        if is_accessible(locations_distance=distance, within_range=within_range):
+            # print(f"genres: {len(genres_table)}")
+            # print(f"genres: {genres_table}")
+            # print(f"locations_name: {genres_table[0][1]}")
+            locations_name = genres_table[0][1]
+            genres_1 = genres_table[0][2]
+            genres_2 = genres_table[1][2]
+            # print(genres_1)
+            # print(genres_2)
 
-
-    #     locations_distance = LocationsDistance(
-    #         start_location=start_location, end_location=end_location
-    #     )
-    #     within_range = within_tky_sta.within_range
-    #     distance = locations_distance.locations_distance
-    #     if is_accessible(locations_distance=distance, within_range=within_range):
-    #         print(f"genres: {len(genres_table)}")
-    #         print(f"genres: {genres_table[0][1]  + genres_table[0][2]}")
-    #         location_and_genre = AccessibleLocation(end_location, genres_table[0][1])
-    #         print(location_and_genre.locations_name)
-    #         print(location_and_genre.genres1)
-
-
-    #         within_range_locations.append(end_location)
-
-    #         # print(f"genres: {genres_table[2]}")
-            
+            location_and_genres = AccessibleLocation(locations_name, genres_1, genres_2)
+            print(location_and_genres.locations_name)
+            print(location_and_genres.genres1)
+            print(location_and_genres.genres2)
+            within_range_locations.append(location_and_genres)
+            # accessibleLocation = AccessibleLocation()
+            print(within_range_locations)
 
 
 if __name__ == "__main__":

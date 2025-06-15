@@ -57,6 +57,6 @@ class AccessibleLocation():
     """
     移動可能圏内の施設情報です。
     """
-    locations_name: str = ""
-    genres1: str = ""
-    genres2: str = None
+    locations_name: str
+    genres1: str
+    genres2: str
