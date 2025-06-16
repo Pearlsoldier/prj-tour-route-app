@@ -17,20 +17,25 @@ from preprocessing import DatabasePreprocessing
 def main():
 
     sql_handler = QueryBuilder()
-    uuid.uuid4
-    # batch_insert = sql_handler.insert_cid_datasets()
-    locations_tabale_query = sql_handler.get_locations_table()
+
+    locations_log_handler = sql_handler.create_cid_table_locations_log("locations_log")
+
+    # uuid.uuid4
+    # # batch_insert = sql_handler.insert_cid_datasets()
+    # locations_tabale_query = sql_handler.get_locations_table()
     db_handler = DatabaseService()
-    locations_table = db_handler.execute_query_fetch(locations_tabale_query)
-    print(f"locations_table: {locations_table}")
-    print(locations_table[0][0])
-    for i in range(len(locations_table)):
-        print(locations_table[i][0])
-        print(locations_table[i][1])
-        location_id = str(locations_table[i][0])
-        genres = sql_handler.get_genres(locations_table[i][0])
-        locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
-        print(locations_genres)
+    db_handler.execute_query(
+        locations_log_handler,
+    )
+    # print(f"locations_table: {locations_table}")
+    # print(locations_table[0][0])
+    # for i in range(len(locations_table)):
+    #     print(locations_table[i][0])
+    #     print(locations_table[i][1])
+    #     location_id = str(locations_table[i][0])
+    #     genres = sql_handler.get_genres(locations_table[i][0])
+    #     locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
+    #     print(locations_genres)
 
     # genresの追加
     # id = uuid.uuid4()
@@ -46,13 +51,6 @@ def main():
     # genres = sql_handler.get_genres(locations_table[5][0])
     # locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
     # print(locations_genres)
-
-
-
-
-
-
-
 
     # for i in range(len(locations_table)):
     #     print(locations_table[i][0])

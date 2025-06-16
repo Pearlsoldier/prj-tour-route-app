@@ -22,6 +22,13 @@ class QueryBuilder:
         genre TEXT,
         PRIMARY KEY(id));"""
 
+    def create_cid_table_locations_log(self, table_name):
+        return f"""CREATE TABLE {table_name}
+        (location_id UUID REFERENCES locations(id),
+        id UUID,
+        location_name TEXT,
+        PRIMARY KEY(id));"""
+
     def insert_parent_datasets(self):
         return f"INSERT INTO locations (id, location_name, address, longitude, latitude) VALUES (%s, %s, %s, %s, %s)"
 
