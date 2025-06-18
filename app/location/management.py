@@ -22,8 +22,8 @@ class LocationManager:
         self.place_name = self.locations_data.place_name
     
 class MappingManager:
-    def __init__(self, place_name):
-        location_map = Mapping(place_name)
+    def __init__(self, place_name, lat, lon):
+        location_map = Mapping(place_name, lat, lon)
         self.initialized_map = location_map.map
         
 def main():

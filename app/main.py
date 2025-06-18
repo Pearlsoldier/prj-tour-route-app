@@ -9,7 +9,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from typing import Union
 from fastapi import FastAPI
-from location.management import LocationManager
+from location.management import LocationManager, MappingManager
+
+from mapping.mapping import Mapping
 
 from geocoding.geocoding import Geocoding, ReverseGeocoding
 from location.locations import Location, AccessibleLocation
@@ -47,13 +49,13 @@ def get_coordinates(place_name):
         return e
 
 
-@app.get("/map/{mapping}/")
-def mapping(place_name):
-    try:
-        map = MappingManager(place_name)
-        return map.initialized_map
-    except Exception as e:
-        return e
+# @app.get("/map/{mapping}/")
+# def mapping(place_name):
+#     try:
+#         map = MappingManager(place_name)
+#         return map.initialized_map
+#     except Exception as e:
+#         return e
 
 
 def main():
@@ -66,12 +68,16 @@ def main():
     locations_tabale_query = sql_handler.get_locations_table()
     db_handler = DatabaseService()
     locations_table = db_handler.execute_query_fetch(locations_tabale_query)
-    print(f"locations_table: {locations_table}")
-    print(f"locations_table: {locations_table[0]}")
+    # print(f"locations_table: {locations_table}")
+    # print(f"locations_table: {locations_table[0]}")
     within_range_locations = []
 
     input = {"location": "東京駅", "transport": "Car", "transit_time": 3}
     start_location = input["location"]
+    tky_sta = Location(start_location)
+    start_tky_sta = Mapping(tky_sta._location, tky_sta._latitude, tky_sta._longitude)
+    start_tky_sta.plot_marker()
+    print(start_tky_sta.mapping())
 
     trans_car = Car()
 
