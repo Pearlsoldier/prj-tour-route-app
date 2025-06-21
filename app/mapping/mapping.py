@@ -8,7 +8,7 @@ import folium
 
 
 class Mapping:
-    def __init__(self, place_name, lat, lon):
+    def __init__(self, place_name, lat, lon, zoom_start):
         """
         地図の初期化
         地図のインスタンスを生成
