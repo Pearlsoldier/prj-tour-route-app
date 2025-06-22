@@ -5,9 +5,6 @@ from rich.console import Console
 import pprint
 import uuid
 
-import folium
-
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from typing import Union
@@ -81,50 +78,46 @@ def main():
     start_map = Mapping(
         tky_sta._location, tky_sta._latitude, tky_sta._longitude, zoom_start=15
     )
-    folium.CircleMarker(
-        location=[tky_sta._latitude, tky_sta._longitude], radius=40, color="#ff0000"
-    ).add_to(start_map.map)
 
-    start_map.plot_marker()
-    print(start_map.mapping())
+    start_map_tky_sta = start_map.plot_start_mark()
+    able_tky_sta = start_map_tky_sta.plot_circle_mark()
 
-    # trans_car = Car()
+    trans_car = Car()
 
-    # within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
-    # for i in range(len(locations_table)):
-    #     locations_name = locations_table[i][1]
-    #     locations_id = locations_table[i][0]
-    #     end_location = locations_name
+    within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
+    radius = within_tky_sta.within_range
+    print(radius)
+    able_tky_sta = start_map_tky_sta.plot_circle_mark(with_in_range=radius)
+    print(able_tky_sta.mapping())
+    for i in range(len(locations_table)):
+        locations_name = locations_table[i][1]
+        locations_id = locations_table[i][0]
+        end_location = locations_name
 
-    #     if start_location == end_location:
-    #         print(f"end : {end_location}")
-    #         continue
-    #     get_genres_query = sql_handler.get_genres(end_location)
-    #     genres_table = db_handler.execute_query_fetch(
-    #         get_genres_query, params=(locations_table[i][0],)
-    #     )
-    #     locations_distance = LocationsDistance(
-    #         start_location=start_location, end_location=end_location
-    #     )
-    #     within_range = within_tky_sta.within_range
-    #     distance = locations_distance.locations_distance
-    #     if is_accessible(locations_distance=distance, within_range=within_range):
-    #         # print(f"genres: {len(genres_table)}")
-    #         # print(f"genres: {genres_table}")
-    #         # print(f"locations_name: {genres_table[0][1]}")
-    #         locations_name = genres_table[0][1]
-    #         genres_1 = genres_table[0][2]
-    #         genres_2 = genres_table[1][2]
-    #         # print(genres_1)
-    #         # print(genres_2)
+        if start_location == end_location:
+            print(f"end : {end_location}")
+            continue
+        get_genres_query = sql_handler.get_genres(end_location)
+        genres_table = db_handler.execute_query_fetch(
+            get_genres_query, params=(locations_table[i][0],)
+        )
+        locations_distance = LocationsDistance(
+            start_location=start_location, end_location=end_location
+        )
+        within_range = within_tky_sta.within_range
+        distance = locations_distance.locations_distance
+        if is_accessible(locations_distance=distance, within_range=within_range):
+            locations_name = genres_table[0][1]
+            genres_1 = genres_table[0][2]
+            genres_2 = genres_table[1][2]
 
-    #         location_and_genres = AccessibleLocation(locations_name, genres_1, genres_2)
-    #         print(location_and_genres.locations_name)
-    #         print(location_and_genres.genres1)
-    #         print(location_and_genres.genres2)
-    #         within_range_locations.append(location_and_genres)
-    #         # accessibleLocation = AccessibleLocation()
-    #         print(within_range_locations)
+            location_and_genres = AccessibleLocation(locations_name, genres_1, genres_2)
+            print(location_and_genres.locations_name)
+            print(location_and_genres.genres1)
+            print(location_and_genres.genres2)
+            within_range_locations.append(location_and_genres)
+            # accessibleLocation = AccessibleLocation()
+            print(within_range_locations)
 
 
 if __name__ == "__main__":
