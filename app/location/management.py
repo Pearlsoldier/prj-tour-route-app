@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 # locationモジュールから直接インポート
 from location.locations import Location
 from geocoding.geocoding import Geocoding
-from mapping.mapping import Mapping
+from app.mapping.mapgenerator import MapGenerator
 
 
 class LocationManager:
