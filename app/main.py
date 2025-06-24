@@ -85,9 +85,10 @@ def main():
         tky_sta._location, tky_sta._latitude, tky_sta._longitude, zoom_start=15
     )
     mapping_tokyo_station = MapPlotter(start_map_instance.map)
-    mapping_tokyo_station.plot_point(tky_sta)
-    mapping_tokyo_station.plot_circle_mark(radius)
-    mapping_tokyo_station.mapping()
+    plot_tokyo_station = mapping_tokyo_station.plot_point(tky_sta)
+    mapping_tko_sta = start_map_instance.generate_map_from_plotter(plot_tokyo_station)
+
+    # mapping_tokyo_station.plot_circle_mark(radius)
 
 
     
