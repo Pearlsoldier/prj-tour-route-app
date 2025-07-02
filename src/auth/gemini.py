@@ -9,3 +9,6 @@ class GeminiSecrets:
     @property
     def api_key(self) -> str:
         return self.__api_key
+    
+    def load_local_env()
+        
