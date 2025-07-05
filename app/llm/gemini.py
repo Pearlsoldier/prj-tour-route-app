@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+from prompts import system_prompt
+
+user_prompt = input()
+
 # .envファイルの読み込み
 load_dotenv()
 
@@ -16,11 +20,12 @@ client = genai.Client(api_key=API_KEY)
 # コンテンツ生成の実行
 response = client.models.generate_content(
     model="gemini-2.0-flash-exp",
-    contents="富士山とは何ですか？",
+    contents=user_prompt,
     config=types.GenerateContentConfig(
-        system_instruction="ツアーコンダクターとして解説してください。"
+        system_instruction=system_prompt
     ),
 )
 
 # 結果の表示
+
 print(response.text)
