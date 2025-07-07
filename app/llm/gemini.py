@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from pydantic import BaseModel
+from typing import List
 
 from prompts import system_prompt
 
@@ -14,6 +16,11 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
+class GeminiResponse(BaseModel):
+    response: str
+    is_continue_conversation: bool
+
+
 # クライアントの初期化
 client = genai.Client(api_key=API_KEY)
 
@@ -21,9 +28,11 @@ client = genai.Client(api_key=API_KEY)
 response = client.models.generate_content(
     model="gemini-2.0-flash-exp",
     contents=user_prompt,
-    config=types.GenerateContentConfig(
-        system_instruction=system_prompt
-    ),
+    config=genai.types.GenerateContentConfig(
+        system_instruction=system_prompt,
+        response_mime_type="application/json",
+        response_schema=GeminiResponse.model_json_schema()
+    )
 )
 
 # 結果の表示
