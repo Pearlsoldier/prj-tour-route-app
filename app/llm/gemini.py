@@ -5,9 +5,9 @@ from google.genai import types
 from pydantic import BaseModel
 from typing import List
 
-from prompts import system_prompt
+from prompts import system_prompt, user_prompt
 
-user_prompt = input()
+user_input = input()
 
 # .envファイルの読み込み
 load_dotenv()
@@ -31,10 +31,8 @@ response = client.models.generate_content(
     config=genai.types.GenerateContentConfig(
         system_instruction=system_prompt,
         response_mime_type="application/json",
-        response_schema=GeminiResponse.model_json_schema()
-    )
+        response_schema=GeminiResponse.model_json_schema(),
+    ),
 )
 
 # 結果の表示
-
-print(response.text)

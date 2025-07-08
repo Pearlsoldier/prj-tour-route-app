@@ -40,6 +40,17 @@ from metrics_module.metrics_Interface import DistanceMetrics
 
 from transport.transport import Car
 
+import os
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
+from pydantic import BaseModel
+from typing import List
+
+from llm.prompts import system_prompt, user_prompt
+from llm.gemini import GeminiResponse
+
+
 app = FastAPI()
 
 
@@ -122,6 +133,10 @@ def main():
             within_range_locations.append(location_and_genres)
     start_map_instance.generate_map_from_plotter(mapping_tokyo_station)
     print(within_range_locations)
+
+    is_continue_conversation = True
+    while is_continue_conversation:
+        user_input = input()
 
 
 if __name__ == "__main__":
