@@ -7,8 +7,6 @@ from typing import List
 
 from prompts import system_prompt, user_prompt
 
-user_input = input()
-
 # .envファイルの読み込み
 load_dotenv()
 
@@ -24,7 +22,7 @@ class GeminiResponse(BaseModel):
     is_continue_conversation: bool
 
 
-class ConversationMessa(BaseModel):
+class ConversationMessage(BaseModel):
     """
     会話の１メッセージを規定する
     roleは、ユーザーかGeminiか
@@ -37,25 +35,28 @@ class SessionManager(BaseModel):
     """
     Geminiとユーザーの会話を管理するクラス
     """
+    def __init__(self, api_key):
+        self.client = genai.Client(api_key=api_key)
+        self.location_datas
+        self.chat_logs: List[ConversationMessage] = []
+        self.session_active = False
 
+    def initialize_session(self, location_datas):
+        self.location_datas = location_datas
+        self.session_active = True
+        self.chat_logs = []
+        return "施設情報の設定を完了しました。"
+    
+    def add_user_message(self, user_input):
+        message = ConversationMessage(
+            role="user",
+            content=input 
+        )
+        self.chat_logs.append(message)
 
-"""
-# クライアントの初期化
-    @property
-    def client(self, API_KEY):
-        self.client = genai.Client(api_key=API_KEY)
-
-# コンテンツ生成の実行
-    @property
-    def response(self, user_prompt, system_prompt):
-        response = self.client.models.generate_content(
-            model="gemini-2.0-flash-exp",
-            contents=user_prompt,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                response_mime_type="application/json",
-                response_schema=GeminiResponse.model_json_schema(),
-                ),
-            )
-        return response
-"""
+    def add_gemini_message(self, response):
+        message = ConversationMessage(
+            role="gemini",
+            content=response
+        )
+        self.chat_logs.append(message)
