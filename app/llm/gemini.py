@@ -50,8 +50,8 @@ class SessionManager(BaseModel):
     def add_user_message(self, user_input):
         message = ConversationMessage(
             role="user",
-            content=input 
-        )
+            content=user_input
+            )
         self.chat_logs.append(message)
 
     def add_gemini_message(self, response):
@@ -60,3 +60,8 @@ class SessionManager(BaseModel):
             content=response
         )
         self.chat_logs.append(message)
+    
+    def generate_response(self, user_input, user_prompt, system_prompt) -> GeminiResponse:
+
+        self.add_user_message(user_input)
+        
