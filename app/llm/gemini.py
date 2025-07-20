@@ -13,13 +13,6 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
-class GeminiResponse(BaseModel):
-    """
-    Geminiのレスポンスを規定するクラス
-    """
-
-    response: str
-    is_continue_conversation: bool
 
 
 class ConversationMessage(BaseModel):
