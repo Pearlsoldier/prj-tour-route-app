@@ -1,13 +1,12 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-API_KEY = os.getenv("API_KEY")
-
 
 class AuthGemini:
-    def __init__(self, api_key):
-        self._api_key = api_key
+    def __init__(self):
+        load_dotenv()
+        GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+        self._api_key = GEMINI_API_KEY
 
     @property
     def get_gemini_api_key(self):

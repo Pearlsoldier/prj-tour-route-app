@@ -8,4 +8,3 @@ class Model:
     @property
     def model(self):
         return self._model
-
