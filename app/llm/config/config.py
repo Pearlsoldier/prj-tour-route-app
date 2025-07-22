@@ -1,5 +1,4 @@
 from config.response_schema import GeminiResponse
-from setup_system_prompt import SystemPrompt
 from google.genai import types
 
 
@@ -8,7 +7,7 @@ class Config:
         """
         configの設定、システムプロンプトと、構造化出力
         """
-        self._system_instruction = SystemPrompt().system_prompt
+        self._system_instruction = system_instruction
         self._response_schema = response_schema
 
     @property

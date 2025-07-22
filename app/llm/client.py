@@ -1,18 +1,14 @@
 from google import genai
 from auth import AuthGemini
 from model import Model
-from config.config import Config
 from setup_user_prompt import UserPrompt
-
-from config.response_schema import GeminiResponse
-from setup_system_prompt import SystemPrompt
 
 
 class GeminiClient:
-    def __init__(self):
+    def __init__(self, config):
         self._gemini_model = Model().model
         self._contents = UserPrompt().user_prompt
-        self._config = Config().setup_config
+        self._config = config
         self._setup_client()
 
     def _setup_client(self):
