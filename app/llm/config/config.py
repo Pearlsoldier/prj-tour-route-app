@@ -1,9 +1,8 @@
-from config.response_schema import GeminiResponse
 from google.genai import types
 
 
 class Config:
-    def __init__(self, system_instruction: str, response_schema: GeminiResponse):
+    def __init__(self, system_instruction: str, response_schema):
         """
         configの設定、システムプロンプトと、構造化出力
         """

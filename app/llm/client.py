@@ -18,6 +18,8 @@ class GeminiClient:
 
     def generate_response(self, user_input):
         response = self.client.models.generate_content(
-            model=self._gemini_model, contents=self._contents, config=self._config
-        )
+            model=self._gemini_model,
+            contents=self._contents,
+            config=self._config
+            )
         return response
