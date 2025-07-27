@@ -14,5 +14,5 @@ class Config:
         return {
             "system_instruction": self._system_instruction,
             "response_mime_type": "application/json",
-            "response_schema": self._response_schema
-            }
+            "response_schema": self._response_schema,
+        }
