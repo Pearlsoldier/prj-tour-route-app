@@ -10,9 +10,10 @@ from client import GeminiClient
 
 def main():
     chat_logs = []
+    user_input = "東京駅近郊の観光地を教えて"
     gemini_response = GeminiResponse
     formatted_contents = ContentsFormatter(
-        user_prompt=user_prompt, chat_logs=[], user_input="東京駅近郊の観光地を教えて"
+        user_prompt=user_prompt, user_input=user_input, chat_logs=[]
     )
     location_datasets = "東京タワーと東京駅、日比谷公園、皇居"
 
@@ -30,9 +31,18 @@ def main():
     res = gemini_client.generate_response()
     print(res)
     print(f"返信内容: {res.parsed.response}")
-    chat_logs.append(res.parsed.response)
     print(f"is_continue_conversation: {res.parsed.is_continue_conversation}")
-    
+    formatted_contents.update_chat_logs(message=user_input)
+    formatted_contents.update_chat_logs(res.parsed.response)
+    user_input = input()
+    formatted_contents.update_user_input(user_input)
+    gemini_client = GeminiClient(
+        config=gemini_config.setup_config,
+        contents=formatted_contents.formatted_contents,
+    )
+    res = gemini_client.generate_response()
+    print(f"返信内容: {res.parsed.response}")
+
 
 if __name__ == "__main__":
     main()
