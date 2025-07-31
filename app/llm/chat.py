@@ -32,16 +32,24 @@ def main():
     print(res)
     print(f"返信内容: {res.parsed.response}")
     print(f"is_continue_conversation: {res.parsed.is_continue_conversation}")
-    formatted_contents.update_chat_logs(message=user_input)
-    formatted_contents.update_chat_logs(res.parsed.response)
-    user_input = input()
-    formatted_contents.update_user_input(user_input)
-    gemini_client = GeminiClient(
-        config=gemini_config.setup_config,
-        contents=formatted_contents.formatted_contents,
-    )
-    res = gemini_client.generate_response()
-    print(f"返信内容: {res.parsed.response}")
+    is_continue_conversation = res.parsed.is_continue_conversation
+
+    while is_continue_conversation:
+
+        formatted_contents.update_chat_logs(message=user_input)
+        formatted_contents.update_chat_logs(res.parsed.response)
+        user_input = input()
+        formatted_contents.update_user_input(user_input)
+
+        gemini_client = GeminiClient(
+            config=gemini_config.setup_config,
+            contents=formatted_contents.formatted_contents,
+        )
+        res = gemini_client.generate_response()
+        print(f"返信内容: {res.parsed.response}")
+        print(f"is_continue_conversation: {res.parsed.is_continue_conversation}")
+        is_continue_conversation = res.parsed.is_continue_conversation
+    print("終了")
 
 
 if __name__ == "__main__":

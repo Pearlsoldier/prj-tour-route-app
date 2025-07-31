@@ -23,4 +23,4 @@ class ContentsFormatter:
 
     @property
     def formatted_contents(self):
-        return self._con
+        return self._setup_prompt()
