@@ -29,9 +29,6 @@ def main():
         contents=formatted_contents.formatted_contents,
     )
     res = gemini_client.generate_response()
-    print(res)
-    print(f"返信内容: {res.parsed.response}")
-    print(f"is_continue_conversation: {res.parsed.is_continue_conversation}")
     is_continue_conversation = res.parsed.is_continue_conversation
 
     while is_continue_conversation:
