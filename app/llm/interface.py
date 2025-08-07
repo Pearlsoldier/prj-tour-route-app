@@ -9,18 +9,22 @@ from client import GeminiClient
 
 
 class ChatInterface:
-    def __init__(
-        self,
-        response_schema,
-        contents_formatter,
-        client,
-        system_instruction,
-        user_input,
-        chat_logs,
-    ):
-        self._response_schema = response_schema
-        self._contents_formatter = contents_formatter
+    def __init__(self, client, config, format):
+        """
+        それぞれのクラスを受け取りそれらをまとめる（指揮）するクラスと考える
+        """
         self._client = client
-        self._system_instruction = system_instruction
-        self._user_input = user_input
-        self._chat_logs = chat_logs
+        self._config = config
+        self._contents_format = format
+    
+    def start_chat(self):
+        res = self._client.generate_response()
+        return res
+
+    def continue_chat(self, new_user_input):
+        """このインターフェースは状態を保つべきか？"""
+        self._contents_format.update_chat_logs(message=user_input)
+        self._contents_format.update_chat_logs(res.parsed.response)
+        self._contents_format.update_user_input(new_user_input)
+
+
