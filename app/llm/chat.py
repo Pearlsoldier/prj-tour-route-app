@@ -9,8 +9,6 @@ from client import GeminiClient
 
 
 def main():
-    chat_logs = []
-    user_input = "東京駅近郊の観光地を教えて"
     gemini_response = GeminiResponse
     formatted_contents = ContentsFormatter(
         user_prompt=user_prompt, user_input=user_input, chat_logs=[]
