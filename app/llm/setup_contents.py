@@ -1,3 +1,7 @@
+from google import genai
+from google.genai import types
+
+
 class ContentsFormatter:
     def __init__(
         self,
@@ -23,4 +27,5 @@ class ContentsFormatter:
 
     @property
     def formatted_contents(self):
-        return self._setup_prompt()
+        content_text = self._setup_prompt()
+        return [types.UserContent(parts=[types.Part.from_text(text=content_text)])]
