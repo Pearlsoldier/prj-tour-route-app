@@ -60,33 +60,42 @@ class ChatInterface:
         return self._chat_response
 
     def continue_chat(self, new_user_input):
-        """このインターフェースは状態を保つべきか？"""
-        self._contents_format.update_chat_logs(message=user_input)
-        self._contents_format.update_chat_logs(res.parsed.response)
+        self._contents.update_chat_logs(message=self._chat_response.parsed.response)
+        self._contents.update_chat_logs(message=new_user_input)
         self._contents.update_user_input(new_user_input)
+        self._client = GeminiClient(self._model, self._config, self._contents)
+        self._chat_response = self._client.generate_response()
+        return self._chat_response
 
 
-def main():
-    chat = []
-    user_input = "東京駅近郊の観光地を教えて"
-    location_data_sets = "日比谷公園, 皇居, 東京駅, 東京タワー"
-    builder = ClientBuilder
-    gemini_model = builder.set_up_model()
-    gemini_contents = builder.create_contents(user_input=user_input)
-    gemini_system_prompt = builder.create_system_instruction(
-        location_datasets=location_data_sets
-    )
-    gemini_config = builder.create_config(
-        gemini_system_instruction=gemini_system_prompt
-    )
+# 使用方法
+# def main():
+#     chat = []
+#     user_input = "東京駅近郊の観光地を教えて"
+#     location_data_sets = "日比谷公園, 皇居, 東京駅, 東京タワー"
+#     builder = ClientBuilder
+#     gemini_model = builder.set_up_model()
+#     gemini_contents = builder.create_contents(user_input=user_input)
+#     gemini_system_prompt = builder.create_system_instruction(
+#         location_datasets=location_data_sets
+#     )
+#     gemini_config = builder.create_config(
+#         gemini_system_instruction=gemini_system_prompt
+#     )
 
-    gemini_chat = ChatInterface(
-        model=gemini_model, config=gemini_config, contents=gemini_contents
-    )
-    chat = gemini_chat.start_chat()
-    print(chat.parsed.response)
-    print(chat.parsed.is_continue_conversation)
+#     gemini_chat = ChatInterface(
+#         model=gemini_model, config=gemini_config, contents=gemini_contents
+#     )
+#     chat = gemini_chat.start_chat()
+#     print(chat.parsed.response)
+#     print(chat.parsed.is_continue_conversation)
+#     while chat.parsed.is_continue_conversation:
+#         user_input = input()
+#         gemini_chat.continue_chat(new_user_input=user_input)
+#         chat = gemini_chat.start_chat()
+#         print(chat.parsed.response)
+#         print(chat.parsed.is_continue_conversation)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
