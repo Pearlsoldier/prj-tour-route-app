@@ -1,13 +1,13 @@
-from config.config import Config
-from setup_contents import ContentsFormatter
-from config.response_schema import GeminiResponse
-from setup_system_prompt import SystemInstruction
+from .config.config import Config
+from .setup_contents import ContentsFormatter
+from .config.response_schema import GeminiResponse
+from .setup_system_prompt import SystemInstruction
 
-from prompts import system_prompt, user_prompt
+from .prompts import system_prompt, user_prompt
 
-from model import Model
+from .model import Model
 
-from client import GeminiClient
+from .client import GeminiClient
 
 from google import genai
 from google.genai import types

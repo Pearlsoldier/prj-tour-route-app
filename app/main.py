@@ -42,34 +42,16 @@ from transport.transport import Car
 
 import os
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
 from pydantic import BaseModel
 from typing import List
 
 from llm.prompts import system_prompt, user_prompt
-from llm.gemini import GeminiResponse
+from llm.interface import ClientBuilder, ChatInterface
+from llm.config.config import Config
 
 
-app = FastAPI()
-
-
-@app.get("/location/{place_name}/")
-def get_coordinates(place_name):
-    try:
-        locator = LocationManager(place_name)
-        return locator.locations_data
-    except Exception as e:
-        return e
-
-
-# @app.get("/map/{mapping}/")
-# def mapping(place_name):
-#     try:
-#         map = MappingManager(place_name)
-#         return map.initialized_map
-#     except Exception as e:
-#         return e
+from google import genai
+from google.genai import types
 
 
 def main():
@@ -135,8 +117,26 @@ def main():
     print(within_range_locations)
 
     is_continue_conversation = True
+    chat = []
     while is_continue_conversation:
         user_input = input()
+        location_data_sets = within_range_locations
+        builder = ClientBuilder
+        gemini_model = builder.set_up_model()
+        gemini_contents = builder.create_contents(user_input=user_input)
+        gemini_system_prompt = builder.create_system_instruction(
+            location_datasets=location_data_sets
+        )
+        gemini_config = builder.create_config(
+            gemini_system_instruction=gemini_system_prompt
+        )
+
+        gemini_chat = ChatInterface(
+            model=gemini_model, config=gemini_config, contents=gemini_contents
+        )
+        chat = gemini_chat.start_chat()
+        print(chat.parsed.response)
+        print(chat.parsed.is_continue_conversation)
 
 
 if __name__ == "__main__":
