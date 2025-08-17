@@ -55,6 +55,7 @@ from google.genai import types
 
 
 def main():
+    load_dotenv()
 
     def is_accessible(locations_distance: float, within_range: int):
         return locations_distance < within_range
@@ -68,10 +69,10 @@ def main():
     # print(f"locations_table: {locations_table[0]}")
     within_range_locations = []
 
-    input = {"location": "東京駅", "transport": "Car", "transit_time": 3}
-    start_location = input["location"]
+    config = {"location": "東京駅", "transport": "Car", "transit_time": 3}
+    start_location = config["location"]
     trans_car = Car()
-    within_tky_sta = WithinRange(trans_car.movement_speed, input["transit_time"])
+    within_tky_sta = WithinRange(trans_car.movement_speed, config["transit_time"])
     radius = within_tky_sta.within_range
 
     tky_sta = Location(start_location)
