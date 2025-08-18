@@ -3,7 +3,7 @@ from .setup_contents import ContentsFormatter
 from .config.response_schema import GeminiResponse
 from .setup_system_prompt import SystemInstruction
 
-from .prompts import system_prompt, user_prompt
+from .dialogue_prompts import system_prompt, user_prompt
 
 from .model import Model
 
