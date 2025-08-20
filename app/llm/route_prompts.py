@@ -1,4 +1,4 @@
-system_prompt = """
+route_system_prompt = """
 # ルートアプリエージェント システムプロンプト
 
 ## 役割
@@ -25,10 +25,7 @@ system_prompt = """
 
 """
 
-user_prompt = """
-## 会話履歴
-{chat_logs}
-
+route_user_prompt = """
 ## ユーザー入力
 {user_input}
 

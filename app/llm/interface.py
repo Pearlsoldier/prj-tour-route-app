@@ -1,13 +1,14 @@
-from .config.config import Config
-from .setup_contents import ContentsFormatter
-from .config.response_schema import GeminiResponse
-from .setup_system_prompt import SystemInstruction
+from config.config import Config
+from setup_contents import ContentsFormatter
+from config.response_schema import GeminiResponse
+from setup_system_prompt import SystemInstruction
 
-from .dialogue_prompts import system_prompt, user_prompt
+from dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
+from route_prompts import route_system_prompt, route_user_prompt
 
-from .model import Model
+from model import Model
 
-from .client import GeminiClient
+from client import GeminiClient
 
 from google import genai
 from google.genai import types
@@ -28,9 +29,10 @@ class ClientBuilder:
         return formatted_contents
 
     @staticmethod
-    def create_system_instruction(location_datasets):
+    def create_system_instruction(system_prompt, location_datasets=None):
         gemini_system_instruction = SystemInstruction(
-            system_instruction=system_prompt, location_datasets=location_datasets
+            location_datasets,
+            system_instruction=system_prompt,
         )
         return gemini_system_instruction
 
@@ -69,33 +71,23 @@ class ChatInterface:
 
 
 # 使用方法
-# def main():
-#     chat = []
-#     user_input = "東京駅近郊の観光地を教えて"
-#     location_data_sets = "日比谷公園, 皇居, 東京駅, 東京タワー"
-#     builder = ClientBuilder
-#     gemini_model = builder.set_up_model()
-#     gemini_contents = builder.create_contents(user_input=user_input)
-#     gemini_system_prompt = builder.create_system_instruction(
-#         location_datasets=location_data_sets
-#     )
-#     gemini_config = builder.create_config(
-#         gemini_system_instruction=gemini_system_prompt
-#     )
+def main():
+    user_input = "徒歩移動で東京駅から皇居外苑まで"
+    builder = ClientBuilder
+    gemini_model = builder.set_up_model()
+    gemini_contents = builder.create_contents(user_input=user_input)
+    gemini_system_prompt = builder.create_system_instruction()
+    gemini_config = builder.create_config(
+        gemini_system_instruction=gemini_system_prompt
+    )
 
-#     gemini_chat = ChatInterface(
-#         model=gemini_model, config=gemini_config, contents=gemini_contents
-#     )
-#     chat = gemini_chat.start_chat()
-#     print(chat.parsed.response)
-#     print(chat.parsed.is_continue_conversation)
-#     while chat.parsed.is_continue_conversation:
-#         user_input = input()
-#         gemini_chat.continue_chat(new_user_input=user_input)
-#         chat = gemini_chat.start_chat()
-#         print(chat.parsed.response)
-#         print(chat.parsed.is_continue_conversation)
+    gemini_chat = ChatInterface(
+        model=gemini_model, config=gemini_config, contents=gemini_contents
+    )
+    chat = gemini_chat.start_chat()
+    print(chat.parsed.response)
+    print(chat.parsed.is_continue_conversation)
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

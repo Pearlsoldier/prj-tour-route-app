@@ -1,4 +1,4 @@
-system_prompt = """
+dialogue_system_prompt = """
 # ルートアプリエージェント システムプロンプト
 
 ## 役割
@@ -40,7 +40,7 @@ system_prompt = """
 - ユーザーの要望がデータの範囲外の場合は、丁寧に説明して代替案を提示する
 """
 
-user_prompt = """
+dialogue_user_prompt = """
 ## 会話履歴
 {chat_logs}
 

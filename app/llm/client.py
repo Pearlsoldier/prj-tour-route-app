@@ -1,7 +1,7 @@
 from google import genai
-from .auth import AuthGemini
-from .model import Model
-from .setup_contents import ContentsFormatter
+from auth import AuthGemini
+from model import Model
+from setup_contents import ContentsFormatter
 
 
 class GeminiClient:

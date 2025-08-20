@@ -1,5 +1,5 @@
 class SystemInstruction:
-    def __init__(self, system_instruction, location_datasets):
+    def __init__(self, system_instruction, location_datasets=None):
         self._base_prompt = system_instruction
         self._location_datasets = location_datasets
         self._system_prompt = self._setup_prompt()
