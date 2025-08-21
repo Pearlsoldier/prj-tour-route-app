@@ -1,6 +1,6 @@
 from config.config import Config
 from setup_contents import ContentsFormatter
-from config.response_schema import GeminiResponse
+from config.response_schema import GeminiResponse, RouteResponse
 from setup_system_prompt import SystemInstruction
 
 from dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
@@ -78,7 +78,7 @@ def main():
     gemini_contents = builder.create_contents(user_input=user_input)
     gemini_system_prompt = builder.create_system_instruction()
     gemini_config = builder.create_config(
-        gemini_system_instruction=gemini_system_prompt
+        gemini_system_instruction=route_system_prompt
     )
 
     gemini_chat = ChatInterface(
