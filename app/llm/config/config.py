@@ -1,7 +1,8 @@
-from google.genai import types
-
-
 class Config:
+    """
+    システムプロンプトとレスポンススキームは必ず必要なので、引数としてセットする。
+    これは汎用的にしようできる。
+    """
     def __init__(self, system_instruction, response_schema):
         """
         configの設定、システムプロンプトと、構造化出力

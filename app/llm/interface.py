@@ -1,14 +1,14 @@
 from config.config import Config
-from setup_contents import ContentsFormatter
-from config.response_schema import GeminiResponse, RouteResponse
-from setup_system_prompt import SystemInstruction
+from config.setup_contents import ContentsFormatter
+from config.response_schema import ChatResponse, RouteResponse
+from config.setup_system_prompt import SystemInstruction
 
-from dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
-from route_prompts import route_system_prompt, route_user_prompt
+from prompts.dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
+from prompts.route_prompts import route_system_prompt, route_user_prompt
 
-from model import Model
+from model.model import Model
 
-from client import GeminiClient
+from client.client import GeminiClient
 
 from google import genai
 from google.genai import types
@@ -24,7 +24,7 @@ class ClientBuilder:
     @staticmethod
     def create_contents(user_input):
         formatted_contents = ContentsFormatter(
-            user_prompt=user_prompt, user_input=user_input, chat_logs=[]
+            user_prompt=route_user_prompt, user_input=user_input, chat_logs=[]
         )
         return formatted_contents
 
@@ -44,7 +44,6 @@ class ClientBuilder:
             response_schema=gemini_response,
         )
         return gemini_config
-
 
 class ChatInterface:
     def __init__(self, model, config, contents):
@@ -76,8 +75,7 @@ def main():
     builder = ClientBuilder
     gemini_model = builder.set_up_model()
     gemini_contents = builder.create_contents(user_input=user_input)
-    gemini_system_prompt = builder.create_system_instruction()
-    gemini_config = builder.create_config(
+    gemini_config = builder.response_config(
         gemini_system_instruction=route_system_prompt
     )
 

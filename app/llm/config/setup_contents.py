@@ -1,7 +1,3 @@
-from google import genai
-from google.genai import types
-
-
 class ContentsFormatter:
     def __init__(
         self,

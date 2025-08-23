@@ -45,7 +45,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import List
 
-from app.llm.dialogue_prompts import system_prompt, user_prompt
+from app.llm.prompts.dialogue_prompts import system_prompt, user_prompt
 from llm.interface import ClientBuilder, ChatInterface
 from llm.config.config import Config
 

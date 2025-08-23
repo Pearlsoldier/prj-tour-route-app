@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class GeminiResponse(BaseModel):
+class ChatResponse(BaseModel):
     """
     Geminiのレスポンスを規定するクラス
     """
