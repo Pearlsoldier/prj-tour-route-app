@@ -24,4 +24,4 @@ class ContentsFormatter:
     @property
     def formatted_contents(self):
         content_text = self._setup_prompt()
-        return [types.UserContent(parts=[types.Part.from_text(text=content_text)])]
+        return content_text

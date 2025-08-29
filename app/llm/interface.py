@@ -1,17 +1,17 @@
-from config.config import Config
-from config.setup_contents import ContentsFormatter
-from config.response_schema import ChatResponse, RouteResponse
-from config.setup_system_prompt import SystemInstruction
+from llm.config.config import Config
+from llm.config.setup_contents import ContentsFormatter
+from llm.config.response_schema import ChatResponse, RouteResponse
+from llm.config.setup_system_prompt import SystemInstruction
 
-from prompts.dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
-from prompts.route_prompts import route_system_prompt, route_user_prompt
+from llm.prompts.dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
+from llm.prompts.route_prompts import route_system_prompt, route_user_prompt
 
-from model.model import Model
+from llm.model.model import Model
 
-from client.client import GeminiClient
+from llm.client.client import GeminiClient
 
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from google.generativeai import types
 
 
 class ClientBuilder:
@@ -31,14 +31,14 @@ class ClientBuilder:
     @staticmethod
     def create_system_instruction(system_prompt, location_datasets=None):
         gemini_system_instruction = SystemInstruction(
-            location_datasets,
-            system_instruction=system_prompt,
+            system_prompt,
+            location_datasets=location_datasets,
         )
         return gemini_system_instruction
 
     @staticmethod
     def create_config(gemini_system_instruction):
-        gemini_response = GeminiResponse
+        gemini_response = ChatResponse
         gemini_config = Config(
             system_instruction=gemini_system_instruction.system_prompt,
             response_schema=gemini_response,
