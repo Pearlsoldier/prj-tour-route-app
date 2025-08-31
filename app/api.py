@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import sys
 import os
+from dotenv import load_dotenv
 
 from urllib.parse import urlparse
 
@@ -20,6 +21,12 @@ from llm.interface import ClientBuilder, ChatInterface
 from location.locations import AccessibleLocation
 from llm.prompts.dialogue_prompts import dialogue_system_prompt
 from llm.prompts.nearby_location import nearby_system_prompt
+
+from metrics_module.metrics import LocationsDistance
+from DB.database import DatabaseService
+from sql.postgresql import QueryBuilder
+from location.locations import Location, AccessibleLocation
+
 
 app = FastAPI(title="Tour Route API", version="1.0.0")
 
@@ -122,12 +129,76 @@ async def chat_get(user_input: str):
     
 @app.get("/places/nearby")
 async def search_places(request: Request):
+    """
+    GETリクエストでチャットができるエンドポイント
+    例: http://localhost:8999/places/nearby?q=東京駅&radius=500&category=cafe
+    """
     full_url = str(request.url)
-    print(f"Full URL: {full_url}")
-    return {"original_url": full_url}
-
-
+    parsed = urlparse(full_url)
+    params = parse_qs(parsed.query)
+    if 'q' not in params or not params['q'][0]:
+        raise ValueError("必須パラメータ'q'が指定されていません")
     
+    result = {
+            'start_position': params['q'][0],
+            'radius': int(params['radius'][0]) if 'radius' in params else 1000,
+            'category': params['category'][0] if 'category' in params else None,
+            'limit': int(params['limit'][0]) if 'limit' in params else 20
+        }
+    start_position = result['start_position']
+    
+    load_dotenv()
+
+    def is_accessible(locations_distance: float, radius: int):
+        return locations_distance < radius
+
+    # 移動手段と所有時間から移動可能圏内を導く
+    sql_handler = QueryBuilder()
+    locations_tabale_query = sql_handler.get_locations_table()
+    db_handler = DatabaseService()
+    locations_table = db_handler.execute_query_fetch(locations_tabale_query)
+    # print(f"locations_table: {locations_table}")
+    within_range_locations = []
+    start_position = Location(start_position)
+    start_location = start_position.location
+
+    accessible_locations = []
+
+    for i in range(len(locations_table)):
+        locations_name = locations_table[i][1]
+        locations_id = locations_table[i][0]
+        end_location = locations_name
+
+        if start_location == end_location:
+            # print(f"end : {end_location}")
+            continue
+        get_genres_query = sql_handler.get_genres(end_location)
+        genres_table = db_handler.execute_query_fetch(
+            get_genres_query, params=(locations_table[i][0],)
+        )
+        locations_distance = LocationsDistance(
+            start_location=start_location,
+            end_location=end_location
+        )
+        distance = locations_distance.locations_distance
+        if is_accessible(locations_distance=distance, radius=result['radius']):
+            end_location_handler = Location(end_location)
+            locations_name = genres_table[0][1]
+            location_and_genres = AccessibleLocation(
+                end_location_handler.location,
+                end_location_handler.address
+            )
+            accessible_locations.append(locations_name)
+    return {
+        "metadata":{
+            "total_results": len(locations_table),
+            "count": len(accessible_locations)
+        },
+        "places": {
+            "name": location_and_genres.locations_name,
+            "adress": location_and_genres.adress
+        }
+    }
 
 if __name__ == "__main__":
     import uvicorn
