@@ -18,7 +18,8 @@ class PostgresCredentials:
         self.user = os.getenv("user")
         self.password = os.getenv("password")
         self.port = os.getenv("port")
-
+        self.ssl_mode = "disable" # ローカル環境
+        # self.ssl_mode = 'require'  # 本番環境
 
 class PostgresClient:
     """
