@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import asyncpg
 import asyncio
 
-import DB.database from PostgresClient
+from DB.database import PostgresClient, DatabaseService
 
 from urllib.parse import urlparse
 
@@ -35,16 +35,20 @@ from location.locations import Location, AccessibleLocation
 
 app = FastAPI(title="Tour Route API", version="1.0.0")
 
+
 class ChatStartRequest(BaseModel):
     user_input: str
     location_data: Optional[List[dict]] = []
+
 
 class ChatResponse(BaseModel):
     response: str
     continue_conversation: bool
 
+
 class SearchParams(BaseModel):
     q: str
+
 
 @app.post("/chat/start", response_model=ChatResponse)
 def start_chat(request: ChatStartRequest):
@@ -58,7 +62,7 @@ def start_chat(request: ChatStartRequest):
             accessible_location = AccessibleLocation(
                 locations_name=loc.get("locations_name", ""),
                 genres1=loc.get("genres1", ""),
-                genres2=loc.get("genres2", "")
+                genres2=loc.get("genres2", ""),
             )
             locations.append(accessible_location)
 
@@ -67,32 +71,35 @@ def start_chat(request: ChatStartRequest):
         gemini_model = builder.set_up_model()
         gemini_contents = builder.create_contents(user_input=request.user_input)
         gemini_system_prompt = builder.create_system_instruction(
-            system_prompt=dialogue_system_prompt,
-            location_datasets=locations
+            system_prompt=dialogue_system_prompt, location_datasets=locations
         )
         gemini_config = builder.create_config(
             gemini_system_instruction=gemini_system_prompt
         )
 
         gemini_chat = ChatInterface(
-            model=gemini_model, 
-            config=gemini_config, 
-            contents=gemini_contents
+            model=gemini_model, config=gemini_config, contents=gemini_contents
         )
         chat_response = gemini_chat.start_chat()
-        
+
         # テスト用の簡単なレスポンス
         return ChatResponse(
-            response=chat_response.text if hasattr(chat_response, 'text') else str(chat_response),
-            continue_conversation=True
+            response=(
+                chat_response.text
+                if hasattr(chat_response, "text")
+                else str(chat_response)
+            ),
+            continue_conversation=True,
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat start failed: {str(e)}")
+
 
 @app.get("/")
 def root():
     return {"message": "Tour Route API is running"}
+
 
 @app.get("/chat/{user_input}")
 def chat_get(user_input: str):
@@ -109,49 +116,58 @@ def chat_get(user_input: str):
         gemini_model = builder.set_up_model()
         gemini_contents = builder.create_contents(user_input=user_input)
         gemini_system_prompt = builder.create_system_instruction(
-            system_prompt=dialogue_system_prompt,
-            location_datasets=locations
+            system_prompt=dialogue_system_prompt, location_datasets=locations
         )
         gemini_config = builder.create_config(
             gemini_system_instruction=gemini_system_prompt
         )
 
         gemini_chat = ChatInterface(
-            model=gemini_model, 
-            config=gemini_config, 
-            contents=gemini_contents
+            model=gemini_model, config=gemini_config, contents=gemini_contents
         )
         chat_response = gemini_chat.start_chat()
-        
+
         return {
             "user_input": user_input,
-            "response": chat_response.text if hasattr(chat_response, 'text') else str(chat_response),
-            "continue_conversation": True
+            "response": (
+                chat_response.text
+                if hasattr(chat_response, "text")
+                else str(chat_response)
+            ),
+            "continue_conversation": True,
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
-    
+
+
 @app.get("/places/nearby")
-async def search_places(request: Request, postgre_config: PostgresClient):
+async def search_places(request: Request):
     """
     GETリクエストでチャットができるエンドポイント
     例: http://localhost:8999/places/nearby?q=東京駅&radius=500&category=cafe
     """
-    conn = None
-    conn = await asyncio.wait_for(
-        asyncpg.connect(
-            post_config = PostgresClient()
-        )
-    ) 
+    database_service = PostgresClient()
+    try:
+        client = PostgresClient()
 
+        async with client.get_connection_context() as conn:
+            result = await conn.fetch("SELECT version()")
+
+        return {
+            "status": "connection successful",
+            "database_version": result[0] if result else "No result",
+        }
+
+    except Exception as e:
+        return {"status": "error", "error_message": str(e)}
 
     # full_url = str(request.url)
     # parsed = urlparse(full_url)
     # params = parse_qs(parsed.query)
     # if 'q' not in params or not params['q'][0]:
     #     raise ValueError("必須パラメータ'q'が指定されていません")
-    
+
     # result = {
     #         'start_position': params['q'][0],
     #         'radius': int(params['radius'][0]) if 'radius' in params else 1000,
@@ -159,7 +175,7 @@ async def search_places(request: Request, postgre_config: PostgresClient):
     #         'limit': int(params['limit'][0]) if 'limit' in params else 20
     #     }
     # start_position = result['start_position']
-    
+
     # load_dotenv()
 
     # def is_accessible(locations_distance: float, radius: int):
@@ -213,6 +229,8 @@ async def search_places(request: Request, postgre_config: PostgresClient):
     #     }
     # }
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8999)

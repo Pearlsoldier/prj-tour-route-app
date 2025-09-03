@@ -1,6 +1,9 @@
 import os
 from dotenv import load_dotenv
-import psycopg
+import asyncpg
+import asyncio
+from contextlib import asynccontextmanager
+from typing import Optional, List, Any
 
 
 class PostgresCredentials:
@@ -14,12 +17,13 @@ class PostgresCredentials:
         load_dotenv("../../.env")
 
         self.host = os.getenv("host")
-        self.dbname = os.getenv("database")
+        self.database = os.getenv("database")
         self.user = os.getenv("user")
         self.password = os.getenv("password")
         self.port = os.getenv("port")
-        self.ssl_mode = "disable" # ローカル環境
+        self.ssl_mode = "disable"  # ローカル環境
         # self.ssl_mode = 'require'  # 本番環境
+
 
 class PostgresClient:
     """
@@ -30,39 +34,44 @@ class PostgresClient:
 
     def __init__(self):
         self.config = PostgresCredentials()
+        self.connection_timeout = 10.0
+        self.query_timeout = 30.0
 
-    def connect(self):
+    async def connect(self):
         try:
-            self.conn = psycopg.connect(
-                host=self.config.host,
-                dbname=self.config.dbname,
-                user=self.config.user,
-                password=self.config.password,
-                port=self.config.port,
+            conn = await asyncio.wait_for(
+                asyncpg.connect(
+                    host=self.config.host,
+                    database=self.config.database,
+                    user=self.config.user,
+                    password=self.config.password,
+                    port=self.config.port,
+                    ssl=self.config.ssl_mode,
+                ),
+                timeout=self.connection_timeout,
             )
-            self.cur = self.conn.cursor()
-            return True
+            return conn
+        except asyncio.TimeoutError:
+            raise Exception(
+                f"接続タイムアウト: {self.connection_timeout}秒以内に接続できませんでした"
+            )
         except Exception as e:
-            print(f"接続に失敗しました{e}")
-            return False
+            raise Exception(f"接続エラー: {e}")
 
-    def execute(self, query, params=None):
-        """SQLクエリを実行するメソッド"""
-        self.cur.execute(query, params)
-        return self.cur
-
-    def commit(self):
-        self.conn.commit()
-
-    def close(self):
-        if self.cur:
-            self.cur.close()
-        if self.conn:
-            self.conn.close()
+    @asynccontextmanager
+    async def get_connection_context(self):
+        conn = None
+        try:
+            conn = await self.connect()
+            yield conn
+        finally:
+            if conn:
+                await conn.close()
 
 
 class DatabaseService:
     """
+    非同期処理で行う
     PostgresClientを使って、
     アプリケーションが必要とするDB操作
     （例：データ取得、保存など）を提供するクラス
@@ -71,47 +80,33 @@ class DatabaseService:
     def __init__(self):
         self.client = PostgresClient()
 
-    def execute_query_fetch(self, query, params=None):
-        try:
-            if self.client.connect():
-                cursor = self.client.execute(query, params)
-                result = cursor.fetchall()
-                self.client.commit()
-                self.client.close()
+    async def execute_query_fetch(self, query: str, params: Optional[tuple] = None):
+        async with self.client.get_connection_context() as conn:
+            try:
+                result = await asyncio.wait_for(
+                    conn.fetch(query, *(params or ())),
+                    timeout=self.client.query_timeout,
+                )
                 return result
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
+            except asyncio.TimeoutError:
+                raise Exception(
+                    f"クエリタイムアウト: {self.client.query_timeout}秒以内に完了しませんでした"
+                )
+            except Exception as e:
+                raise Exception(f"クエリ実行エラー: {e}")
 
-    def execute_query(self, query, params=None):
-        try:
-            if self.client.connect():
-                self.client.execute(query, params)
-                self.client.commit()
-                self.client.close()
+    async def execute_query(self, query: str, params: Optional[tuple] = None) -> bool:
+        """INSERT/UPDATE/DELETE文を実行"""
+        async with self.client.get_connection_context() as conn:
+            try:
+                await asyncio.wait_for(
+                    conn.execute(query, *(params or ())),
+                    timeout=self.client.query_timeout,
+                )
                 return True
-            return False
-        except Exception as e:
-            print(f"失敗しました。{e}")
-            return False
-
-    # def execute_query_fetch(self, query, params=None):
-    #     try:
-    #         print(f"Debug - 受け取ったQuery: {repr(query)}")
-    #         print(f"Debug - 受け取ったParams: {params}")
-    #         print(f"Debug - Params type: {type(params)}")
-
-    #         if self.client.connect():
-    #             print("Debug - 接続成功")
-    #             cursor = self.client.execute(query, params)
-    #             print("Debug - クエリ実行後")
-    #             result = cursor.fetchall()
-    #             self.client.commit()
-    #             self.client.close()
-    #             return result
-    #         return False
-    #     except Exception as e:
-    #         print(f"失敗しました。{e}")
-    #         print(f"Debug - エラーの詳細: {type(e).__name__}")
-    #         return False
+            except asyncio.TimeoutError:
+                raise Exception(
+                    f"クエリタイムアウト: {self.client.query_timeout}秒以内に完了しませんでした"
+                )
+            except Exception as e:
+                raise Exception(f"クエリ実行エラー: {e}")
