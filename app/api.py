@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 from fastapi import FastAPI, Request, Query, Depends
 from fastapi.responses import JSONResponse
+from fastapi.requests import Request
 from typing import Optional, Dict, Any, List
 from urllib.parse import urlparse, parse_qs, unquote
 from pydantic import BaseModel, Field
@@ -48,6 +49,24 @@ class ChatResponse(BaseModel):
 
 class SearchParams(BaseModel):
     q: str
+    
+class CustomHttpException(Exception):
+    def __init__(self, status_code: int, message: str):
+        self.status_code = status_code
+        self.message = message
+
+
+@app.exception_handler(CustomHttpException)
+async def custom_http_exception_handler(request: Request, exc: CustomHttpException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": {
+                "code": exc.status_code,
+                "message": exc.message
+            }
+        }
+    )
 
 
 @app.post("/chat/start", response_model=ChatResponse)
@@ -60,7 +79,7 @@ def start_chat(request: ChatStartRequest):
         locations = []
         for loc in request.location_data:
             accessible_location = AccessibleLocation(
-                locations_name=loc.get("locations_name", ""),
+                location_name=loc.get("location_name", ""),
                 genres1=loc.get("genres1", ""),
                 genres2=loc.get("genres2", ""),
             )
@@ -142,92 +161,93 @@ def chat_get(user_input: str):
 
 
 @app.get("/places/nearby")
-async def search_places(request: Request):
+async def search_places(
+    q: str = Query(...,  description="検索の基準となる地名やランドマーク名", examples="東京駅"),
+    radius: Optional[int] = Query(1000, description="検索半径（メートル）", examples=500),
+    category: Optional[str] = Query(None, description="場所のカテゴリを指定（例: カフェ、レストラン、公園など）", examples="cafe"),
+    limit: Optional[int] = Query(10, description="取得する最大の件数。指定しない場合はデフォルト値（例: 20）を適用", examples=10)
+    ):
     """
-    GETリクエストでチャットができるエンドポイント
+    GETリクエストのエンドポイント
     例: http://localhost:8999/places/nearby?q=東京駅&radius=500&category=cafe
     """
-    database_service = PostgresClient()
+    if not q:
+        raise CustomHttpException(400, "必須パラメータ 'q' が指定されていません。")
+    load_dotenv()
     try:
+        start_position = Location(q)
+        start_location_name = start_position.location
+        start_lat = float(start_position.latitude)
+        start_lon = float(start_position.longitude)
+        start_address = start_position.address
+
+        accessible_locations = []
+        
+        def is_accessible(locations_distance: float, radius: int):
+            return locations_distance < radius
+        
+        sql_handler = QueryBuilder()
+        db_handler = DatabaseService()
+
         client = PostgresClient()
+
+        locations_query = sql_handler.get_locations_table()
+        locations_table = await db_handler.execute_query_fetch(locations_query)
+
 
         async with client.get_connection_context() as conn:
             result = await conn.fetch("SELECT version()")
+        
+        print(f"locations_table: {locations_table}")
 
+        within_range_locations = []
+
+        
+
+        print(f"locations_table :{locations_table}")
+        for location_record in locations_table:
+            end_location_name = location_record['location_name']
+            location_id = location_record['id']
+            end_lat = float(location_record['latitude'])
+            end_lon = float(location_record['longitude'])
+            location_address = location_record['address']
+
+            if start_location_name == end_location_name:
+                # print(f"end : {end_location}")
+                continue
+            get_genres_query = sql_handler.get_genres()
+            genres_table = await db_handler.execute_query_fetch(
+                get_genres_query, (location_id,) 
+            )
+            locations_distance = LocationsDistance(
+                start_location=start_location_name,
+                end_location=end_location_name
+            )
+            distance = locations_distance.locations_distance
+            if is_accessible(locations_distance=distance, radius=radius):
+                end_location_handler = Location(end_location_name)
+                location_and_genres = AccessibleLocation(
+                    end_location_handler.location,
+                    end_location_handler.address
+                )
+                accessible_locations.append(end_location_name)
         return {
-            "status": "connection successful",
-            "database_version": result[0] if result else "No result",
+            "metadata":{
+                "total_results": len(locations_table),
+                "count": len(accessible_locations)
+            },
+            "places": {
+                "name": location_and_genres.locations_name,
+                "adress": location_and_genres.adress
+            }
         }
 
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        return {"status": "error", "error_message": str(e)}
+        raise HTTPException(status_code=500, detail="Internal server error")
 
-    # full_url = str(request.url)
-    # parsed = urlparse(full_url)
-    # params = parse_qs(parsed.query)
-    # if 'q' not in params or not params['q'][0]:
-    #     raise ValueError("必須パラメータ'q'が指定されていません")
 
-    # result = {
-    #         'start_position': params['q'][0],
-    #         'radius': int(params['radius'][0]) if 'radius' in params else 1000,
-    #         'category': params['category'][0] if 'category' in params else None,
-    #         'limit': int(params['limit'][0]) if 'limit' in params else 20
-    #     }
-    # start_position = result['start_position']
-
-    # load_dotenv()
-
-    # def is_accessible(locations_distance: float, radius: int):
-    #     return locations_distance < radius
-
-    # # 移動手段と所有時間から移動可能圏内を導く
-    # sql_handler = QueryBuilder()
-    # locations_tabale_query = sql_handler.get_locations_table()
-    # db_handler = DatabaseService()
-    # locations_table = db_handler.execute_query_fetch(locations_tabale_query)
-    # # print(f"locations_table: {locations_table}")
-    # within_range_locations = []
-    # start_position = Location(start_position)
-    # start_location = start_position.location
-
-    # accessible_locations = []
-
-    # for i in range(len(locations_table)):
-    #     locations_name = locations_table[i][1]
-    #     locations_id = locations_table[i][0]
-    #     end_location = locations_name
-
-    #     if start_location == end_location:
-    #         # print(f"end : {end_location}")
-    #         continue
-    #     get_genres_query = sql_handler.get_genres(end_location)
-    #     genres_table = db_handler.execute_query_fetch(
-    #         get_genres_query, params=(locations_table[i][0],)
-    #     )
-    #     locations_distance = LocationsDistance(
-    #         start_location=start_location,
-    #         end_location=end_location
-    #     )
-    #     distance = locations_distance.locations_distance
-    #     if is_accessible(locations_distance=distance, radius=result['radius']):
-    #         end_location_handler = Location(end_location)
-    #         locations_name = genres_table[0][1]
-    #         location_and_genres = AccessibleLocation(
-    #             end_location_handler.location,
-    #             end_location_handler.address
-    #         )
-    #         accessible_locations.append(locations_name)
-    # return {
-    #     "metadata":{
-    #         "total_results": len(locations_table),
-    #         "count": len(accessible_locations)
-    #     },
-    #     "places": {
-    #         "name": location_and_genres.locations_name,
-    #         "adress": location_and_genres.adress
-    #     }
-    # }
 
 
 if __name__ == "__main__":
