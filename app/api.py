@@ -49,7 +49,8 @@ class ChatResponse(BaseModel):
 
 class SearchParams(BaseModel):
     q: str
-    
+
+
 class CustomHttpException(Exception):
     def __init__(self, status_code: int, message: str):
         self.status_code = status_code
@@ -60,113 +61,28 @@ class CustomHttpException(Exception):
 async def custom_http_exception_handler(request: Request, exc: CustomHttpException):
     return JSONResponse(
         status_code=exc.status_code,
-        content={
-            "error": {
-                "code": exc.status_code,
-                "message": exc.message
-            }
-        }
+        content={"error": {"code": exc.status_code, "message": exc.message}},
     )
-
-
-@app.post("/chat/start", response_model=ChatResponse)
-def start_chat(request: ChatStartRequest):
-    """
-    対話セッションを開始する
-    """
-    try:
-        # location_dataをAccessibleLocationオブジェクトに変換
-        locations = []
-        for loc in request.location_data:
-            accessible_location = AccessibleLocation(
-                location_name=loc.get("location_name", ""),
-                genres1=loc.get("genres1", ""),
-                genres2=loc.get("genres2", ""),
-            )
-            locations.append(accessible_location)
-
-        # ChatInterfaceを使用して対話開始
-        builder = ClientBuilder
-        gemini_model = builder.set_up_model()
-        gemini_contents = builder.create_contents(user_input=request.user_input)
-        gemini_system_prompt = builder.create_system_instruction(
-            system_prompt=dialogue_system_prompt, location_datasets=locations
-        )
-        gemini_config = builder.create_config(
-            gemini_system_instruction=gemini_system_prompt
-        )
-
-        gemini_chat = ChatInterface(
-            model=gemini_model, config=gemini_config, contents=gemini_contents
-        )
-        chat_response = gemini_chat.start_chat()
-
-        # テスト用の簡単なレスポンス
-        return ChatResponse(
-            response=(
-                chat_response.text
-                if hasattr(chat_response, "text")
-                else str(chat_response)
-            ),
-            continue_conversation=True,
-        )
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Chat start failed: {str(e)}")
-
-
-@app.get("/")
-def root():
-    return {"message": "Tour Route API is running"}
-
-
-@app.get("/chat/{user_input}")
-def chat_get(user_input: str):
-    """
-    GETリクエストでチャットができるエンドポイント
-    例: http://localhost:8999/chat/こんにちは
-    """
-    try:
-        # 空のlocation_dataでチャット開始
-        locations = []
-
-        # ChatInterfaceを使用して対話開始
-        builder = ClientBuilder
-        gemini_model = builder.set_up_model()
-        gemini_contents = builder.create_contents(user_input=user_input)
-        gemini_system_prompt = builder.create_system_instruction(
-            system_prompt=dialogue_system_prompt, location_datasets=locations
-        )
-        gemini_config = builder.create_config(
-            gemini_system_instruction=gemini_system_prompt
-        )
-
-        gemini_chat = ChatInterface(
-            model=gemini_model, config=gemini_config, contents=gemini_contents
-        )
-        chat_response = gemini_chat.start_chat()
-
-        return {
-            "user_input": user_input,
-            "response": (
-                chat_response.text
-                if hasattr(chat_response, "text")
-                else str(chat_response)
-            ),
-            "continue_conversation": True,
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
-
 
 @app.get("/places/nearby")
 async def search_places(
-    q: str = Query(...,  description="検索の基準となる地名やランドマーク名", examples="東京駅"),
-    radius: Optional[int] = Query(1000, description="検索半径（メートル）", examples=500),
-    category: Optional[str] = Query(None, description="場所のカテゴリを指定（例: カフェ、レストラン、公園など）", examples="cafe"),
-    limit: Optional[int] = Query(10, description="取得する最大の件数。指定しない場合はデフォルト値（例: 20）を適用", examples=10)
-    ):
+    q: str = Query(
+        ..., description="検索の基準となる地名やランドマーク名", examples="東京駅"
+    ),
+    radius: Optional[int] = Query(
+        1000, description="検索半径（メートル）", examples=500
+    ),
+    category: Optional[str] = Query(
+        None,
+        description="場所のカテゴリを指定（例: カフェ、レストラン、公園など）",
+        examples="cafe",
+    ),
+    limit: Optional[int] = Query(
+        10,
+        description="取得する最大の件数。指定しない場合はデフォルト値（例: 20）を適用",
+        examples=10,
+    ),
+):
     """
     GETリクエストのエンドポイント
     例: http://localhost:8999/places/nearby?q=東京駅&radius=500&category=cafe
@@ -177,79 +93,105 @@ async def search_places(
     try:
         start_position = Location(q)
         start_location_name = start_position.location
-        start_lat = float(start_position.latitude)
-        start_lon = float(start_position.longitude)
-        start_address = start_position.address
+        print(start_location_name)
 
         accessible_locations = []
-        
+
         def is_accessible(locations_distance: float, radius: int):
             return locations_distance < radius
-        
+
         sql_handler = QueryBuilder()
+        print("aqlハンドラー成功")
         db_handler = DatabaseService()
+        print("dbハンドラー成功")
 
-        client = PostgresClient()
-
+        print("クエリ生成開始...")
         locations_query = sql_handler.get_locations_table()
+        print(f"クエリ生成成功: {locations_query}")
+
+        print("データベースクエリ実行開始...")
         locations_table = await db_handler.execute_query_fetch(locations_query)
+        print(f"クエリ実行成功: {len(locations_table)}件のレコード取得")
 
+        ## ここでクエリの施設名がデータベースにないときにエラーをライズ
+## ここでクエリの施設名がデータベースにないときにエラーをライズ
+        is_station = False
+        print(f"検索対象: '{start_location_name}'")
+        print(f"データベース内の場所一覧:")
 
-        async with client.get_connection_context() as conn:
-            result = await conn.fetch("SELECT version()")
-        
-        print(f"locations_table: {locations_table}")
+        for location_record in locations_table:
+            print(f"  - '{location_record['location_name']}'")
+            if start_location_name == location_record["location_name"]:
+                print(f"✅ 一致: {location_record['location_name']}")
+                is_station = True
+                break
+
+        print(f"is_station結果: {is_station}")
+
+        if is_station == False:
+            print("404エラーを発生させます")
+            raise CustomHttpException(
+                404, f"指定された地名 '{start_location_name}' が見つかりませんでした。"
+            )
+
+        print("チェック通過、処理を継続します")
+
 
         within_range_locations = []
 
-        
-
-        print(f"locations_table :{locations_table}")
+        location_and_genres = None
         for location_record in locations_table:
-            end_location_name = location_record['location_name']
-            location_id = location_record['id']
-            end_lat = float(location_record['latitude'])
-            end_lon = float(location_record['longitude'])
-            location_address = location_record['address']
+            end_location_name = location_record["location_name"]
+            location_id = location_record["id"]
+            end_lat = float(location_record["latitude"])
+            end_lon = float(location_record["longitude"])
+            location_address = location_record["address"]
 
             if start_location_name == end_location_name:
                 # print(f"end : {end_location}")
                 continue
             get_genres_query = sql_handler.get_genres()
             genres_table = await db_handler.execute_query_fetch(
-                get_genres_query, (location_id,) 
+                get_genres_query, (location_id,)
             )
             locations_distance = LocationsDistance(
-                start_location=start_location_name,
-                end_location=end_location_name
+                start_location=start_location_name, end_location=end_location_name
             )
             distance = locations_distance.locations_distance
             if is_accessible(locations_distance=distance, radius=radius):
                 end_location_handler = Location(end_location_name)
                 location_and_genres = AccessibleLocation(
-                    end_location_handler.location,
-                    end_location_handler.address
+                    end_location_handler.location, end_location_handler.address
                 )
                 accessible_locations.append(end_location_name)
+        if len(accessible_locations) == 0:
+            return {
+                "metadata": {
+                    "total_results": len(locations_table),
+                    "count": 0,
+                },
+                "places": [],
+                "message": "指定された範囲内に場所が見つかりませんでした"
+            }
         return {
-            "metadata":{
+            "metadata": {
                 "total_results": len(locations_table),
-                "count": len(accessible_locations)
+                "count": len(accessible_locations),
             },
             "places": {
                 "name": location_and_genres.locations_name,
-                "adress": location_and_genres.adress
-            }
+                "adress": location_and_genres.adress,
+            },
         }
-
+    except CustomHttpException:
+        # CustomHttpExceptionは再発生させる（重要！）
+        print("CustomHttpExceptionを再発生")
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
-
-
-
-
+    
 if __name__ == "__main__":
     import uvicorn
 
