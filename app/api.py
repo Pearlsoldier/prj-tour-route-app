@@ -5,8 +5,6 @@ import sys
 import os
 from dotenv import load_dotenv
 
-import asyncpg
-import asyncio
 
 from DB.database import PostgresClient, DatabaseService
 
@@ -85,7 +83,7 @@ async def search_places(
 ):
     """
     GETリクエストのエンドポイント
-    例: http://localhost:8999/places/nearby?q=東京駅&radius=500&category=cafe
+    例: http://localhost:8999/places/nearby?q=東京駅&radius=5000&category=cafe
     """
     if not q:
         raise CustomHttpException(400, "必須パラメータ 'q' が指定されていません。")
@@ -101,20 +99,13 @@ async def search_places(
             return locations_distance < radius
 
         sql_handler = QueryBuilder()
-        print("aqlハンドラー成功")
         db_handler = DatabaseService()
-        print("dbハンドラー成功")
 
-        print("クエリ生成開始...")
         locations_query = sql_handler.get_locations_table()
-        print(f"クエリ生成成功: {locations_query}")
 
-        print("データベースクエリ実行開始...")
         locations_table = await db_handler.execute_query_fetch(locations_query)
-        print(f"クエリ実行成功: {len(locations_table)}件のレコード取得")
 
         ## ここでクエリの施設名がデータベースにないときにエラーをライズ
-## ここでクエリの施設名がデータベースにないときにエラーをライズ
         is_station = False
         print(f"検索対象: '{start_location_name}'")
         print(f"データベース内の場所一覧:")
@@ -134,7 +125,6 @@ async def search_places(
                 404, f"指定された地名 '{start_location_name}' が見つかりませんでした。"
             )
 
-        print("チェック通過、処理を継続します")
 
 
         within_range_locations = []
@@ -152,18 +142,22 @@ async def search_places(
                 continue
             get_genres_query = sql_handler.get_genres()
             genres_table = await db_handler.execute_query_fetch(
-                get_genres_query, (location_id,)
+                get_genres_query,
+                (location_id,)
             )
             locations_distance = LocationsDistance(
-                start_location=start_location_name, end_location=end_location_name
+                start_location=start_location_name,
+                end_location=end_location_name
             )
             distance = locations_distance.locations_distance
             if is_accessible(locations_distance=distance, radius=radius):
                 end_location_handler = Location(end_location_name)
-                location_and_genres = AccessibleLocation(
-                    end_location_handler.location, end_location_handler.address
+                AccessibleLocation(
+                    end_location_handler.location,
+                    end_location_handler.address
                 )
                 accessible_locations.append(end_location_name)
+        print(accessible_locations)
         if len(accessible_locations) == 0:
             return {
                 "metadata": {
@@ -178,13 +172,9 @@ async def search_places(
                 "total_results": len(locations_table),
                 "count": len(accessible_locations),
             },
-            "places": {
-                "name": location_and_genres.locations_name,
-                "adress": location_and_genres.adress,
-            },
+            "places": accessible_locations
         }
     except CustomHttpException:
-        # CustomHttpExceptionは再発生させる（重要！）
         print("CustomHttpExceptionを再発生")
         raise
     except ValueError as e:

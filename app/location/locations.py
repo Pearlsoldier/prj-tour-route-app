@@ -60,4 +60,4 @@ class AccessibleLocation:
     移動可能圏内の施設情報です。
     """
     locations_name: str
-    adress: str
+    address: str
