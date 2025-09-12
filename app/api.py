@@ -5,6 +5,8 @@ import sys
 import os
 from dotenv import load_dotenv
 
+from llm.config.config import Config
+
 
 from DB.database import PostgresClient, DatabaseService
 
@@ -18,13 +20,13 @@ from urllib.parse import urlparse, parse_qs, unquote
 from pydantic import BaseModel, Field
 import json
 
+from llm.interface import ChatInterface, ClientBuilder
+from llm.prompts.route_prompts import route_system_prompt, route_user_prompt
 # パス設定
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from llm.interface import ClientBuilder, ChatInterface
 from location.locations import AccessibleLocation
-from llm.prompts.dialogue_prompts import dialogue_system_prompt
-from llm.prompts.nearby_location import nearby_system_prompt
 
 from metrics_module.metrics import LocationsDistance
 from DB.database import DatabaseService
@@ -139,13 +141,13 @@ async def search_route(
             if is_accessible(locations_distance=distance, radius=radius):
                 end_location_handler = Location(end_location_name)
                 accessible_locations.append({
-                    end_location_name,
-                    end_location_handler.location,
-                    end_location_handler.address,
-                    end_location_handler.longitude,
-                    end_location_handler.latitude
-                    }
-                )
+                    "name": end_location_handler.location,
+                    "address": end_location_handler.address,
+                    "location": {
+                        "lat": end_location_handler.longitude,
+                        "lng": end_location_handler.latitude
+                        }
+                    })
         print(accessible_locations)
         if len(accessible_locations) == 0:
             return {
@@ -156,13 +158,21 @@ async def search_route(
                 "places": [],
                 "message": "指定された範囲内に場所が見つかりませんでした",
             }
-        return {
-            "metadata": {
-                "total_results": len(locations_table),
-                "count": len(accessible_locations),
-            },
-            "places": accessible_locations,
-        }
+        user_input = accessible_locations
+        builder = ClientBuilder
+        gemini_model = builder.set_up_model()
+        gemini_contents = builder.create_contents(user_input=user_input)
+        print("🟢")
+        gemini_system_instruction = builder.create_system_instruction(route_system_prompt)
+        gemini_config = builder.create_config(gemini_system_instruction)
+        print("🟥")
+
+        gemini_chat = ChatInterface(
+            model=gemini_model, config=gemini_config, contents=gemini_contents
+        )
+        print("🟦")
+        chat = gemini_chat.start_chat()
+        return {"Gemini": chat.parsed.response}
     except CustomHttpException:
         print("CustomHttpExceptionを再発生")
         raise
