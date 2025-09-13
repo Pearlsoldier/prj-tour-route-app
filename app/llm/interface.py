@@ -5,6 +5,7 @@ from llm.config.setup_system_prompt import SystemInstruction
 
 from llm.prompts.dialogue_prompts import dialogue_system_prompt, dialogue_user_prompt
 from llm.prompts.route_prompts import route_system_prompt, route_user_prompt
+from llm.prompts.nearby_location import nearby_system_prompt, nearby_user_prompt
 
 from llm.model.model import Model
 
@@ -22,9 +23,11 @@ class ClientBuilder:
         return gemini_model.model
 
     @staticmethod
-    def create_contents(user_input):
+    def create_contents(user_input, start_position):
         formatted_contents = ContentsFormatter(
-            user_prompt=route_user_prompt, user_input=user_input, chat_logs=[]
+            user_prompt=route_user_prompt,
+            user_input=user_input,
+            user_position=start_position,
         )
         return formatted_contents
 
@@ -44,6 +47,7 @@ class ClientBuilder:
             response_schema=gemini_response,
         )
         return gemini_config
+
 
 class ChatInterface:
     def __init__(self, model, config, contents):

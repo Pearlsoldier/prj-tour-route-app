@@ -60,5 +60,4 @@ class AccessibleLocation:
     """
 
     locations_name: str
-    genres1: str
-    genres2: str
+    address: str

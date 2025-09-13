@@ -63,10 +63,7 @@ class Distance:
         cal_api = f"https://vldb.gsi.go.jp/sokuchi/surveycalc/surveycalc/bl2st_calc.pl?outputType={OUTPUT_TYPE}&ellipsoid={ELLIPSOID}&latitude1={lat1}&longitude1={lon1}&latitude2={lat2}&longitude2={lon2}"
         response = requests.get(cal_api)
         data = response.json()
-        print(f"start: {start_location}")
-        print(f"end: {end_location}")
         output = data["OutputData"]
-        print(output)
         distance_str = output.get("geoLength")
         self._distance = float(distance_str)
 

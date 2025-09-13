@@ -1,7 +1,10 @@
 fastapi==0.115.12
 folium==0.19.5
-protobuf==6.30.2
+google-generativeai
+pydantic
+protobuf>=3.19.5,<5.0.0
 psycopg==3.2.6
 python-dotenv==1.1.0
 Requests==2.32.3
 rich==14.0.0
+uvicorn
