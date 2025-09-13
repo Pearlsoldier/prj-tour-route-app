@@ -23,9 +23,11 @@ class ClientBuilder:
         return gemini_model.model
 
     @staticmethod
-    def create_contents(user_input):
+    def create_contents(user_input, start_position):
         formatted_contents = ContentsFormatter(
-            user_prompt=route_user_prompt, user_input=user_input, chat_logs=[]
+            user_prompt=route_user_prompt,
+            user_input=user_input,
+            user_position=start_position,
         )
         return formatted_contents
 
@@ -45,6 +47,7 @@ class ClientBuilder:
             response_schema=gemini_response,
         )
         return gemini_config
+
 
 class ChatInterface:
     def __init__(self, model, config, contents):

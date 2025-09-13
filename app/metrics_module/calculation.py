@@ -13,8 +13,7 @@ import requests
 
 def calc_locations_distance(start_location: str, end_location: str) -> float:
     distance_handler = Distance(
-        start_location=start_location,
-        end_location=end_location
+        start_location=start_location, end_location=end_location
     )
     return distance_handler._distance
 

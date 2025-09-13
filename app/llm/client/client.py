@@ -20,12 +20,22 @@ class GeminiClient:
     def generate_response(self):
         model = genai.GenerativeModel(
             model_name=self._gemini_model,
-            system_instruction=self._config.setup_config.get('system_instruction', '')
+            system_instruction=self._config.setup_config.get("system_instruction", ""),
         )
         # GenerationConfigからsystem_instructionを除去
-        generation_config = {k: v for k, v in self._config.setup_config.items() if k != 'system_instruction'}
-        
-        return model.generate_content(
+        generation_config = {
+            k: v
+            for k, v in self._config.setup_config.items()
+            if k != "system_instruction"
+        }
+
+        response = model.generate_content(
             contents=self._contents.formatted_contents,
             generation_config=generation_config,
         )
+
+        return {
+            "response": response.text,
+            "raw_response": response,
+            "candidates": response.candidates,
+        }

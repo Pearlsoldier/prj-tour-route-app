@@ -1,5 +1,6 @@
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import folium
@@ -29,6 +30,6 @@ class MapPlotter:
             fill_color="#0000ff",
         ).add_to(self._map)
         return self
-    
+
     def get_map(self):
         return self._map

@@ -31,7 +31,6 @@ class Location:
         self._address = reversegeocoding.get_address(
             self._cordinates[0], self._cordinates[1]
         )
-    
 
     @property
     def cordinates(self):
@@ -59,5 +58,6 @@ class AccessibleLocation:
     """
     移動可能圏内の施設情報です。
     """
+
     locations_name: str
     address: str

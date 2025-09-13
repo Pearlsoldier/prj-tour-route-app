@@ -47,7 +47,6 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 
-
 from google import genai
 from google.genai import types
 
@@ -57,17 +56,17 @@ def main():
     url = "https://api.example.com/v1/places/nearby?q=東京駅&radius=500&category=cafe"
     parsed = urlparse(url)
     params = parse_qs(parsed.query)
-    if 'q' not in params or not params['q'][0]:
+    if "q" not in params or not params["q"][0]:
         raise ValueError("必須パラメータ'q'が指定されていません")
-    
+
     result = {
-            'start_position': params['q'][0],
-            'radius': int(params['radius'][0]) if 'radius' in params else 1000,
-            'category': params['category'][0] if 'category' in params else None,
-            'limit': int(params['limit'][0]) if 'limit' in params else 20
-        }
-    start_position = result['start_position']
-    
+        "start_position": params["q"][0],
+        "radius": int(params["radius"][0]) if "radius" in params else 1000,
+        "category": params["category"][0] if "category" in params else None,
+        "limit": int(params["limit"][0]) if "limit" in params else 20,
+    }
+    start_position = result["start_position"]
+
     load_dotenv()
 
     def is_accessible(locations_distance: float, radius: int):
@@ -96,26 +95,17 @@ def main():
             get_genres_query, params=(locations_table[i][0],)
         )
         locations_distance = LocationsDistance(
-            start_location=start_location,
-            end_location=end_location
+            start_location=start_location, end_location=end_location
         )
         distance = locations_distance.locations_distance
-        if is_accessible(locations_distance=distance, radius=result['radius']):
+        if is_accessible(locations_distance=distance, radius=result["radius"]):
             end_location_handler = Location(end_location)
             locations_name = genres_table[0][1]
 
-
             location_and_genres = AccessibleLocation(
-                end_location_handler.location,
-                end_location_handler.address
-               
+                end_location_handler.location, end_location_handler.address
             )
-    return {
-        location_and_genres.locations_name,
-        location_and_genres.adress
-    }
-
-
+    return {location_and_genres.locations_name, location_and_genres.adress}
 
 
 if __name__ == "__main__":

@@ -7,8 +7,7 @@ nearby_system_prompt = """
 """
 
 
-
-nearby_user_prompt ="""
+nearby_user_prompt = """
 ## ユーザー入力
 {user_input}
 """

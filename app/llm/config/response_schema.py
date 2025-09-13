@@ -14,20 +14,25 @@ class RouteResponse(BaseModel):
     """
     Routeのレスポンスを規定するクラス
     """
+
     response: str
     coordinates: list
+
 
 class PlaceLocation(BaseModel):
     """
     場所の緯度と経度を規定するクラス
     """
+
     lat: float
     lng: float
+
 
 class Place(BaseModel):
     """
     個別の場所情報を規定するクラス
     """
+
     id: str
     name: str
     category: str
@@ -37,16 +42,20 @@ class Place(BaseModel):
     rating: float
     url: str
 
+
 class NearbyMetadata(BaseModel):
     """
     メタデータを規定するクラス
     """
+
     total_results: int
     count: int
+
 
 class NearbyResponse(BaseModel):
     """
     APIレスポンス全体を規定するクラス
     """
+
     metadata: NearbyMetadata
     places: list[Place]

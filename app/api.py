@@ -22,6 +22,7 @@ import json
 
 from llm.interface import ChatInterface, ClientBuilder
 from llm.prompts.route_prompts import route_system_prompt, route_user_prompt
+
 # パス設定
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -126,10 +127,6 @@ async def search_route(
 
         for location_record in locations_table:
             end_location_name = location_record["location_name"]
-            location_id = location_record["id"]
-            end_lat = float(location_record["latitude"])
-            end_lon = float(location_record["longitude"])
-            location_address = location_record["address"]
 
             if start_location_name == end_location_name:
                 # print(f"end : {end_location}")
@@ -140,14 +137,16 @@ async def search_route(
             distance = locations_distance.locations_distance
             if is_accessible(locations_distance=distance, radius=radius):
                 end_location_handler = Location(end_location_name)
-                accessible_locations.append({
-                    "name": end_location_handler.location,
-                    "address": end_location_handler.address,
-                    "location": {
-                        "lat": end_location_handler.longitude,
-                        "lng": end_location_handler.latitude
-                        }
-                    })
+                accessible_locations.append(
+                    {
+                        "name": end_location_handler.location,
+                        "address": end_location_handler.address,
+                        "location": {
+                            "lat": end_location_handler.longitude,
+                            "lng": end_location_handler.latitude,
+                        },
+                    }
+                )
         print(accessible_locations)
         if len(accessible_locations) == 0:
             return {
@@ -161,18 +160,23 @@ async def search_route(
         user_input = accessible_locations
         builder = ClientBuilder
         gemini_model = builder.set_up_model()
-        gemini_contents = builder.create_contents(user_input=user_input)
-        print("🟢")
-        gemini_system_instruction = builder.create_system_instruction(route_system_prompt)
+        gemini_contents = builder.create_contents(
+            user_input=user_input, start_position=start_location_name
+        )
+        gemini_system_instruction = builder.create_system_instruction(
+            route_system_prompt
+        )
         gemini_config = builder.create_config(gemini_system_instruction)
-        print("🟥")
 
         gemini_chat = ChatInterface(
             model=gemini_model, config=gemini_config, contents=gemini_contents
         )
-        print("🟦")
         chat = gemini_chat.start_chat()
-        return {"Gemini": chat.parsed.response}
+        try:
+            return {"Gemini": chat["response"]}
+        except Exception as e:
+            print(f"テキスト取得エラー: {e}")
+            return {"Gemini": str(chat)}
     except CustomHttpException:
         print("CustomHttpExceptionを再発生")
         raise
