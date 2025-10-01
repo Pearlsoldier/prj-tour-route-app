@@ -30,16 +30,16 @@ class QueryBuilder:
         PRIMARY KEY(id));"""
 
     def insert_parent_datasets(self):
-        return f"INSERT INTO locations (id, location_name, address, longitude, latitude) VALUES ($1, $2, $3, $4, $5)"
+        return "INSERT INTO locations (id, location_name, address, longitude, latitude) VALUES (%s, %s, %s, %s, %s)"
 
     def insert_cid_datasets(self):
-        return f"INSERT INTO genres (location_id, id, genre) VALUES ($1, $2, $3)"
+        return "INSERT INTO genres (location_id, id, genre) VALUES (%s, %s, %s)"
 
-    def get_location_id(self):
-        return "SELECT id FROM locations WHERE location_name = $1;"
+    def get_location_id(self, location):
+        return "SELECT id FROM locations WHERE location_name = %s"
 
-    def get_locations_table(self):
-        return "SELECT * FROM locations"
+    def get_table(self, table_name):
+        return f"""SELECT * FROM {table_name};"""
 
     def get_locations(self):
         return "SELECT location_name FROM locations"
@@ -54,3 +54,7 @@ class QueryBuilder:
         LEFT JOIN genres g ON l.id = g.location_id
         WHERE l.id = $1;
         """
+
+    def drop_table(self, table_name):
+        return f"""DROP TABLE IF EXISTS {table_name};"""
+    

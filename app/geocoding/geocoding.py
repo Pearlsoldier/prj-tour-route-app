@@ -40,11 +40,13 @@ class ReverseGeocoding:
         """
         address_response = requests.get(self.api_url.format(lon=lon, lat=lat))
         data = address_response.json()
+        print(f"address_response: {address_response}")
 
         if "results" in data:
             address = data["results"]["lv01Nm"]
             return address
         else:
+            print(address_response)
             print("住所情報が見つかりませんでした。")
 
 
