@@ -13,11 +13,8 @@ class mode_administrator(管理者)で施設名を受け取る
 
 
 @dataclass
-class InterfaceAdministrator:
-    place: str
-
-    def __str__(self):
-        return self.place
+class InputLocation:
+    location: str
 
 
 @dataclass
