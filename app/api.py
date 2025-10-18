@@ -207,7 +207,7 @@ async def search_places(
 ):
     """
     GETリクエストのエンドポイント
-    例: http://localhost:8999/route/search?q=東京駅&radius=5000&category=cafe
+    例: http://13.230.241.135:8999/places/nearby?q=東京駅&radius=5000&category=文化施設
     """
     if not q:
         raise CustomHttpException(400, "必須パラメータ 'q' が指定されていません。")
@@ -290,9 +290,15 @@ async def search_places(
         print("CustomHttpExceptionを再発生")
         raise
     except ValueError as e:
+        print(f"ValueError発生: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+        print(f"予期しないエラー発生: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 if __name__ == "__main__":

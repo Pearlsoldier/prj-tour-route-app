@@ -88,7 +88,9 @@ class DatabaseService:
             try:
                 cursor = conn.cursor()
                 cursor.execute(query, params or ())
-                result = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]
+                print(f"🔍 columns: {columns}")
+                result = [dict(zip(columns, row)) for row in cursor.fetchall()]
                 cursor.close()
                 
                 print(f"✅ SELECT実行成功: {len(result)}行取得")

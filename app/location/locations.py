@@ -61,3 +61,19 @@ class AccessibleLocation:
 
     locations_name: str
     address: str
+
+@dataclass
+class TouristSpot:
+    """
+    RDSから取得した施設情報
+    """
+    locations_id: str
+    locations_name: str
+    address: str
+    longitude: float
+    latitude: float
+    genres: list[str]
+
+@dataclass
+class Places:
+    places: list[TouristSpot]
