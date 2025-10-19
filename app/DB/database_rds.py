@@ -59,7 +59,7 @@ class PostgresClient:
             print(f"❌ データベース接続エラー: {e}")
             raise Exception(f"接続エラー: {e}")
 
-    @asynccontextmanage
+    @asynccontextmanager
     async def get_connection_context(self):
         """非同期コネクションのコンテキストマネージャー"""
         conn = None
