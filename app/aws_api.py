@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from llm.config.config import Config
 
 
-from DB.database import PostgresClient
 from DB.database_rds import DatabaseService
 
 from urllib.parse import urlparse
@@ -33,7 +32,6 @@ from llm.interface import ClientBuilder, ChatInterface
 from location.locations import AccessibleLocation
 
 from metrics_module.metrics import LocationsDistance
-from DB.database import DatabaseService
 from sql.postgresql import QueryBuilder
 from location.locations import Location, AccessibleLocation, TouristSpot, Places
 

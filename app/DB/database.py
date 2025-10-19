@@ -46,7 +46,7 @@ class PostgresClient:
                     user=self.config.user,
                     password=self.config.password,
                     port=self.config.port,
-                    ssl=self.config.ssl_mode,
+                    ssl=se,
                 ),
                 timeout=self.connection_timeout,
             )

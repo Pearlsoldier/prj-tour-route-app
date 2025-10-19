@@ -35,7 +35,7 @@ def main():
         locations_genres = db_handler.execute_query_fetch(genres, (location_id,))
         print(locations_genres)
 
-    genresの追加
+    # genresの追加
     id = uuid.uuid4()
     print(id)
     genre = "レジャー"
