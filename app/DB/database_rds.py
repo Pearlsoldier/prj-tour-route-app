@@ -19,12 +19,13 @@ class PostgresCredentials:
         print(f"🔍 .envファイルパス: {env_path}")
         print(f"🔍 .env存在確認: {env_path.exists()}")
         
-        # SSHトンネル経由の接続設定
-        self.host = "localhost"  # SSHトンネル経由
-        self.database = "postgres"
-        self.user = "postgres" 
-        self.password = os.getenv("AWS_RDS_PASSWORD")
-        self.port = 15432  # SSHトンネルのローカルポート
+
+        # RDS接接続設定（.envから読み込み）
+        self.host = os.getenv("DB_HOST")
+        self.database = os.getenv("DB_NAME")
+        self.user = os.getenv("DB_USER")
+        self.password = os.getenv("v")
+        self.port = int(os.getenv("DB_PORT", "5432"))
         
         # パスワードの確認
 
@@ -47,6 +48,7 @@ class PostgresClient:
                 password=self.config.password,
                 port=self.config.port,
                 connect_timeout=self.connection_timeout
+                sslmode='require'
             )
             print("✅ データベース接続成功")
             return conn

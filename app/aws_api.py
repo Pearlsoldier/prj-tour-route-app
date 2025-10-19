@@ -210,7 +210,7 @@ async def search_places(
 ):
     """
     GETリクエストのエンドポイント
-    例: http://172.31.32.246:8999/places/nearby?q=東京駅&radius=5000&category=文化施設
+    例: http://13.231.51.232:8999/places/nearby?q=東京駅&radius=5000&category=レジャー
     例: http://localhost/places/nearby?q=東京駅&radius=5000&category=文化施設
     """
     if not q:
